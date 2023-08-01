@@ -1,14 +1,19 @@
 .PHONY: clean
 
+BAUD = 9600UL
+F_CPU = 1000000UL
+
 CC = avr-gcc
 OBJCOPY = avr-objcopy
 OBJDUMP = avr-objdump
 AVRSIZE = avr-size
 AVRDUDE = avrdude
 
+LIBDIR=../../avlib
+
 CFLAGS = -Os -g -std=gnu99 -Wall
 # Needed by delay.h
-CFLAGS += -DF_CPU=$(F_CPU) -DBAUD=$(BAUD)
+CFLAGS += -DF_CPU=$(F_CPU) -DBAUD=$(BAUD) -I. -I$(LIBDIR)
 ## Use short (8-bit) data types 
 CFLAGS += -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums 
 ## Splits up object files per function
@@ -17,7 +22,7 @@ LDFLAGS = -Wl,-Map,$(TARGET).map
 ## Optional, but often ends up with smaller code
 LDFLAGS += -Wl,--gc-sections 
 
-SOURCES=$(wildcard *.c)
+SOURCES=$(wildcard *.c $(LIBDIR)/*.c)
 OBJECTS=$(SOURCES:.c=.o)
 HEADERS=$(SOURCES:.c=.h)
 

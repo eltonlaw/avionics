@@ -21,7 +21,7 @@ def w(b):
     ser.write(b)
 
 def r():
-    ser.read()
+    return ser.read()
 
 # w(b'H')
 # r()
