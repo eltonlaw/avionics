@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-
 case "$1" in
   "serial")
     ipython -i -c "%load devtools/serial_interactive.py"

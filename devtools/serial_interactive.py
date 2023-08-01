@@ -1,6 +1,10 @@
 import serial
 
-ser = None
+try:
+    ser
+except:
+    ser = None
+
 def start():
     global ser
     ser =  serial.Serial(
