@@ -8,7 +8,7 @@ case "$1" in
 	avr-gcc -print-search-dirs
     ;;
   "fc1")
-    cd fc1 && make
+    cd fc1 && make && make flash
     ;;
   *)
     (cd devtools && make build)

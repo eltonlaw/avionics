@@ -1,3 +1,5 @@
+#include <stdarg.h>
+#include <stdio.h>
 #include <avr/io.h>
 #include "usart.h"
 #include <util/setbaud.h>
@@ -41,4 +43,17 @@ void usart_print_str(const char s[]) {
         usart_send_byte(s[i]);
         i++;
     }
+}
+
+void usart_print_formatted(const char *format, ...) {
+    va_list args;
+    va_start(args, format);
+
+    char buffer[256]; // Adjust buffer size as needed
+    vsnprintf(buffer, sizeof(buffer), format, args);
+
+    va_end(args);
+
+    usart_print_str(buffer);
+    usart_send_byte('\n');
 }
