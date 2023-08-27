@@ -2,4 +2,11 @@
 **/*.hex
 **/*.map
 **/*.o
+
+# Kicad
+**/fp-info-cache
+**/*.kicad_prl
+**/*.zip
+**/*.*.lck
+
 **/build/
