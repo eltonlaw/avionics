@@ -21,7 +21,7 @@ void usart_init() {
 #else
     UCSR0A &= ~(1 << U2X0);
 #endif
-    // Enable sendter/receiver
+    // Enable sender/receiver
     UCSR0B = (1 << TXEN0) | (1 << RXEN0);
     // 8 data bits 1 stop bit
     UCSR0C = (1 << UCSZ01) | (1 << UCSZ00);

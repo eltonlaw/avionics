@@ -7,6 +7,9 @@ case "$1" in
   "avr-gcc")
 	avr-gcc -print-search-dirs
     ;;
+  "fc1")
+    cd fc1 && make
+    ;;
   *)
     (cd devtools && make build)
     ./devtools/cli/build/cli "$@"
