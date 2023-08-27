@@ -27,5 +27,12 @@ def w(b):
 def r():
     return ser.read()
 
+def rl():
+    return ser.readline()
+
+def loop_rl():
+    while True:
+        print(rl())
+
 # w(b'H')
 # r()
