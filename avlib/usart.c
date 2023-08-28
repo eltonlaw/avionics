@@ -45,12 +45,13 @@ void usart_print_str(const char s[]) {
     }
 }
 
-void usart_print_formatted(const char *format, ...) {
+void usart_log(const char *file, int line, const char *format, ...) {
     va_list args;
     va_start(args, format);
 
     char buffer[256]; // Adjust buffer size as needed
-    vsnprintf(buffer, sizeof(buffer), format, args);
+    int offset = snprintf(buffer, sizeof(buffer), "[%s:%d] ", file, line);
+    vsnprintf(buffer + offset, sizeof(buffer) - offset, format, args);
 
     va_end(args);
 
