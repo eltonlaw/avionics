@@ -1,7 +1,4 @@
 #pragma once
-#include <stdbool.h>
-#include <avr/io.h>
-#include <util/twi.h>
 
 #define I2C_WRITE 0x00
 #define I2C_READ 0x01

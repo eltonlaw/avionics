@@ -57,6 +57,10 @@
  *   bits should be masked to zero when checking the status bits. So that
  *   status checking is independent of prescaler setting.
  */
+#include <stdbool.h>
+#include <avr/io.h>
+#include <util/twi.h>
+
 #include "i2c.h"
 
 

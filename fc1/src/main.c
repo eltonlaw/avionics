@@ -1,8 +1,8 @@
 #include <avr/io.h>
 #include <stdbool.h>
 #include <util/delay.h>
-#include "i2c.h"
 #include "error.h"
+#include "i2c.h"
 #include "mpu6050.h"
 #include "log.h"
 
@@ -17,15 +17,18 @@ bool init() {
 
     // init bus at 10 kHz
     i2c_init(10000UL);
-    return true;
+    return E_OK;
 }
 
 int main() {
+    avcerr_t err;
     mpu6050_reg_t mpu6050_reg;
-    if (init() == true) {
-        panic("Failed to initialize: %d", 1);
-    } else {
+
+    err = init();
+    if (err == E_OK) {
         log_info("Finished initialization!");
+    } else {
+        panic("Failed to initialize: %d", err);
     }
 
     while (1) {
