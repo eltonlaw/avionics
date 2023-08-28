@@ -1,7 +1,5 @@
 #include <avr/io.h>
 #include "usart.h"
-#define BAUD 9600
-#define F_CPU 1000000
 #include <util/setbaud.h>
 
 /* USART initialization
