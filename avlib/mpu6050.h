@@ -1,5 +1,7 @@
 #pragma once
 
+#include <util/twi.h>
+
 #define MPU6050_SELF_TEST_X 0x0D
 #define MPU6050_SELF_TEST_Y 0x0E
 #define MPU6050_SELF_TEST_Z 0x0F
@@ -26,8 +28,8 @@
 
 #define MPU6050_I2C_SLA 0x68
 // 7bit address + R/W bit
-#define MPU6050_I2C_SLA_W (MPU6050_I2C_SLA << 1 | I2C_WRITE)
-#define MPU6050_I2C_SLA_R (MPU6050_I2C_SLA << 1 | I2C_READ)
+#define MPU6050_I2C_SLA_W (MPU6050_I2C_SLA << 1 | TW_WRITE)
+#define MPU6050_I2C_SLA_R (MPU6050_I2C_SLA << 1 | TW_READ)
 
 typedef struct {
     uint8_t accel_x_h;

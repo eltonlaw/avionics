@@ -1,10 +1,5 @@
 #pragma once
-
-#include <stdbool.h>
 #include "error.h"
-
-#define I2C_WRITE 0x00
-#define I2C_READ 0x01
 
 void i2c_init(unsigned long bus_speed);
 void i2c_wait_for_complete(void);

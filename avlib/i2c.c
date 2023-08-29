@@ -57,7 +57,6 @@
  *   bits should be masked to zero when checking the status bits. So that
  *   status checking is independent of prescaler setting.
  */
-#include <stdbool.h>
 #include <avr/io.h>
 #include <util/twi.h>
 
@@ -102,7 +101,7 @@ avcerr_t i2c_start() {
         case TW_MT_ARB_LOST:
             goto begin;
         default:
-            log_error("Failed to initialize: %x")
+            log_error("Failed to initialize: %x");
             return E_UNKNOWN;
     }
     return E_OK;
@@ -118,6 +117,7 @@ void i2c_stop() {
 uint8_t i2c_read_ack() {
     TWCR = (_BV(TWINT) | _BV(TWEN) | _BV(TWEA));
     i2c_wait_for_complete();
+    log_debug("TWSR: %x", i2c_get_status());
     return TWDR;
 }
 
