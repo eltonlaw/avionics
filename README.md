@@ -1,11 +1,10 @@
 # avionics
 
     ├── avlib: Shared utils
-    ├── devtools
+    ├── devtools: miscellaneous local dev stuff
     │   ├── blinky: Basic hex file to flash for testing hardware
     │   ├── cli: To replace x.sh
-    │   ├── Makefile
-    │   └── serial_interactive.py
+    │   └── serial_interactive.py: interactive uart with ipython
     ├── fc1: 
     │   ├── fc1board: Kicad files
     │   └── src: Firmware
