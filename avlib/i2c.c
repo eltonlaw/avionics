@@ -61,9 +61,9 @@
 #include <avr/io.h>
 #include <util/twi.h>
 
+#include "error.h"
+#include "log.h"
 #include "i2c.h"
-
-
 
 // FIXME: will likely need to parameterize this when
 // there are  other speeds for SCL
@@ -88,7 +88,7 @@ void i2c_wait_for_complete() {
 
 /* Use registers to tell processor to send the i2c start condition (SDA low
  * then SCL low). */
-bool i2c_start() {
+avcerr_t i2c_start() {
     begin:
     // Have to write a 1 to TWINT to clear the flag. TWI will still be paused
     // otherwise. After setting this register, the MCU will send a falling edge
@@ -102,9 +102,10 @@ bool i2c_start() {
         case TW_MT_ARB_LOST:
             goto begin;
         default:
-            return -1;
+            log_error("Failed to initialize: %x")
+            return E_UNKNOWN;
     }
-    return 1;
+    return E_OK;
 }
 
 void i2c_stop() {

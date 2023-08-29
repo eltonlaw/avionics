@@ -1,12 +1,12 @@
 #pragma once
+#include "log.h"
 
 enum avcerr_t {
     E_OK = 0,
+    // Catch all, discouraged
+    E_UNKNOWN,
 };
 typedef enum avcerr_t avcerr_t;
-
-
-#include "log.h"
 
 // FIXME: Add dump of relevant registers
 #define panic(...) do { \

@@ -45,3 +45,5 @@ typedef struct {
     uint8_t gyro_z_h;
     uint8_t gyro_z_l;
 } mpu6050_reg_t;
+
+void mpu6050_read(mpu6050_reg_t* reg);
