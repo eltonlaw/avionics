@@ -5,15 +5,27 @@ try:
 except:
     ser = None
 
+DEV_FP = "/dev"
+
 def start():
     global ser
-    ser =  serial.Serial(
-        port="/dev/ttyUSB0",
-        baudrate=9600,
-        bytesize=serial.EIGHTBITS,
-        timeout=5,
-        stopbits=serial.STOPBITS_ONE
-    )
+    ports = [f"{DEV_FP}/{d}" for d in os.listdir(f"{DEV_FP}/") if d.startswith("ttyUSB")]
+    print(f"Found ports: {ports}")
+    for port in ports:
+        try:
+            ser = serial.Serial(
+                port=port,
+                baudrate=9600,
+                bytesize=serial.EIGHTBITS,
+                timeout=5,
+                stopbits=serial.STOPBITS_ONE
+            )
+            print(f"Attached to serial port {port}")
+            break
+        except SerialException:
+            continue
+        except:
+            break
     return ser
 
 def stop():
