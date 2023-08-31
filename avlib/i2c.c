@@ -107,9 +107,9 @@ avcerr_t i2c_start() {
     return E_OK;
 }
 
-void assert_status(uint8_t expected) {
+void assert_status(uint8_t expected, const char* msg) {
     if (TW_STATUS != expected) {
-        panic("Expected %x, got %x", expected, TW_STATUS);
+        panic("%s expected %x, got %x", msg, expected, TW_STATUS);
     }
 }
 
@@ -123,14 +123,14 @@ void i2c_stop() {
 uint8_t i2c_read_ack() {
     TWCR = (_BV(TWINT) | _BV(TWEN) | _BV(TWEA));
     i2c_wait_for_complete();
-    assert_status(TW_MR_DATA_ACK);
+    assert_status(TW_MR_DATA_ACK, "i2c_read_ack");
     return TWDR;
 }
 
 uint8_t i2c_read_nack() {
     TWCR = (_BV(TWINT) | _BV(TWEN));
     i2c_wait_for_complete();
-    assert_status(TW_MR_DATA_NACK);
+    assert_status(TW_MR_DATA_NACK, "i2c_read_nack");
     return TWDR;
 }
 
@@ -143,12 +143,17 @@ void i2c_write(uint8_t data) {
 
 void i2c_write_sla_w(uint8_t data) {
     i2c_write(data);
-    assert_status(TW_MT_SLA_ACK);
+    assert_status(TW_MT_SLA_ACK, "i2c_write_sla_w");
+}
+
+void i2c_write_sla_r(uint8_t data) {
+    i2c_write(data);
+    assert_status(TW_MR_SLA_ACK, "i2c_write_sla_r");
 }
 
 void i2c_write_data(uint8_t data) {
     i2c_write(data);
-    assert_status(TW_MT_DATA_ACK);
+    assert_status(TW_MT_DATA_ACK, "i2c_write_data");
 }
 
 uint8_t i2c_status(void) {

@@ -24,7 +24,7 @@ void mpu6050_read(mpu6050_reg_t* reg) {
     // send start condition
     i2c_start();
     // send 7 bit i2c address of mpu6050 + read bit on bus
-    i2c_write(MPU6050_I2C_SLA_R);
+    i2c_write_sla_r(MPU6050_I2C_SLA_R);
 
     // burst read, keep sending acks, MPU6050 will
     // auto-inc address being read.
