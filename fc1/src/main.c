@@ -34,11 +34,10 @@ int main() {
     while (true) {
         // Toggle PB0/PB1
         PORTB ^= ((1 << PINB0) | (1 << PINB1));
-        log_info("Flipped pins PORTB");
 
         mpu6050_read(&mpu6050_reg);
         log_info(
-            "MPU6050 - Ax: %u,%u | Ay: %u,%u | Az: %u,%u | " "T: %u,%u | Gx: %u,%u | Gy: %u,%u | Gz: %u,%u",
+            "MPU6050 - Ax: %03u,%03u | Ay: %03u,%03u | Az: %03u,%03u | " "T: %03u,%03u | Gx: %03u,%03u | Gy: %03u,%03u | Gz: %03u,%03u",
             mpu6050_reg.accel_x_h, mpu6050_reg.accel_x_l,
             mpu6050_reg.accel_y_h, mpu6050_reg.accel_y_l,
             mpu6050_reg.accel_z_h, mpu6050_reg.accel_z_l, mpu6050_reg.temp_h,
