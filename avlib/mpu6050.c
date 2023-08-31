@@ -8,10 +8,10 @@ void mpu6050_read(mpu6050_reg_t* reg) {
     i2c_start();
     // send 7 bit i2c address of mpu6050 + write bit on bus
     // wait for ack from mpu6050
-    i2c_write(MPU6050_I2C_SLA_W);
+    i2c_write_sla_w(MPU6050_I2C_SLA_W);
     // put register address on the bus
     // wait for ack from mpu6050
-    i2c_write(MPU6050_ACCEL_XOUT_H);
+    i2c_write_data(MPU6050_ACCEL_XOUT_H);
     // send start condition
     i2c_start();
     // send 7 bit i2c address of mpu6050 + read bit on bus

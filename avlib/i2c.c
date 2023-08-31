@@ -107,6 +107,12 @@ avcerr_t i2c_start() {
     return E_OK;
 }
 
+void assert_status(uint8_t expected) {
+    if (TW_STATUS != expected) {
+        panic("Expected %x, got %x", expected, TW_STATUS);
+    }
+}
+
 void i2c_stop() {
     // After setting this register, the MCU will send a rising edge
     // on SDA while SCL is held high
@@ -117,13 +123,14 @@ void i2c_stop() {
 uint8_t i2c_read_ack() {
     TWCR = (_BV(TWINT) | _BV(TWEN) | _BV(TWEA));
     i2c_wait_for_complete();
-    log_debug("TWSR: %x", i2c_get_status());
+    assert_status(TW_MR_DATA_ACK);
     return TWDR;
 }
 
 uint8_t i2c_read_nack() {
     TWCR = (_BV(TWINT) | _BV(TWEN));
     i2c_wait_for_complete();
+    assert_status(TW_MR_DATA_NACK);
     return TWDR;
 }
 
@@ -132,9 +139,18 @@ void i2c_write(uint8_t data) {
     TWDR = data;
     TWCR = (_BV(TWINT) | _BV(TWEN));
     i2c_wait_for_complete();
-    // FIXME: check TWSR for ack bit
 }
 
-uint8_t i2c_get_status(void) {
-    return TW_STATUS_MASK;
+void i2c_write_sla_w(uint8_t data) {
+    i2c_write(data);
+    assert_status(TW_MT_SLA_ACK);
+}
+
+void i2c_write_data(uint8_t data) {
+    i2c_write(data);
+    assert_status(TW_MT_DATA_ACK);
+}
+
+uint8_t i2c_status(void) {
+    return TW_STATUS;
 }
