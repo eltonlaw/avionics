@@ -26,6 +26,9 @@
 #define MPU6050_GYRO_ZOUT_H  0x47
 #define MPU6050_GYRO_ZOUT_L  0x48
 
+#define MPU6050_PWR_MGMT 0x6B
+#define MPU6050_PWR_MGMT_OFF 0x00
+
 #define MPU6050_I2C_SLA 0x68
 // 7bit address + R/W bit
 #define MPU6050_I2C_SLA_W (MPU6050_I2C_SLA << 1 | TW_WRITE)
@@ -48,4 +51,5 @@ typedef struct {
     uint8_t gyro_z_l;
 } mpu6050_reg_t;
 
+void mpu6050_init();
 void mpu6050_read(mpu6050_reg_t* reg);

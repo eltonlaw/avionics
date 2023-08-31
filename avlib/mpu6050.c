@@ -3,6 +3,15 @@
 #include "mpu6050.h"
 #include "log.h"
 
+void mpu6050_init() {
+    i2c_start();
+    // Disable sleep mode, returns 0's in sensor registers otherwise
+    i2c_write_sla_w(MPU6050_I2C_SLA_W);
+    i2c_write_data(MPU6050_PWR_MGMT);
+    i2c_write_data(MPU6050_PWR_MGMT_OFF);
+    i2c_stop();
+}
+
 void mpu6050_read(mpu6050_reg_t* reg) {
     // send start condition
     i2c_start();

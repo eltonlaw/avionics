@@ -17,6 +17,8 @@ bool init() {
 
     // init bus at 10 kHz
     i2c_init(10000UL);
+
+    mpu6050_init();
     return E_OK;
 }
 
@@ -45,8 +47,6 @@ int main() {
             mpu6050_reg.gyro_y_h, mpu6050_reg.gyro_y_l, mpu6050_reg.gyro_z_h,
             mpu6050_reg.gyro_z_l
         );
-
-        _delay_ms(1000);
     }
     return 0;
 }
