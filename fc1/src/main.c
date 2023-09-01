@@ -18,7 +18,7 @@ bool init() {
     // init bus at 10 kHz
     i2c_init(10000UL);
 
-    mpu6050_init();
+    mpu6050_init(MPU6050_GYRO_RANGE_250, MPU6050_ACCEL_RANGE_2);
     return E_OK;
 }
 
