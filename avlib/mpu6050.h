@@ -63,8 +63,8 @@ typedef struct {
 
 typedef struct {
     mpu6050_reg_t* reg;
-    mpu6050_accel_range_t accel_range;
-    mpu6050_gyro_range_t gyro_range;
+    float accel_scaler;
+    float gyro_scaler;
 } mpu6050_dev_t;
 
 avcerr_t mpu6050_init(mpu6050_dev_t* dev, uint8_t gyro_range, uint8_t accel_range);

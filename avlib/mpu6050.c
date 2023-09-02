@@ -34,14 +34,40 @@ avcerr_t mpu6050_init(mpu6050_dev_t* mdev, mpu6050_gyro_range_t mgr,
     i2c_write_sla_w(MPU6050_I2C_SLA_W);
     i2c_write_data(MPU6050_REG_GYRO_CONFIG);
     i2c_write_data(gyro_config);
-    mdev->gyro_range = mgr;
+    switch(mgr) {
+        case MPU6050_GYRO_RANGE_250:
+            mdev->gyro_scaler = 131;
+            break;
+        case MPU6050_GYRO_RANGE_500:
+            mdev->gyro_scaler = 65.5;
+            break;
+        case MPU6050_GYRO_RANGE_1000:
+            mdev->gyro_scaler = 32.8;
+            break;
+        case MPU6050_GYRO_RANGE_2000:
+            mdev->gyro_scaler = 16.4;
+            break;
+    }
 
     /* write new accel config */
     i2c_start();
     i2c_write_sla_w(MPU6050_I2C_SLA_W);
     i2c_write_data(MPU6050_REG_ACCEL_CONFIG);
     i2c_write_data(accel_config);
-    mdev->accel_range = mar;
+    switch(mar) {
+        case MPU6050_ACCEL_RANGE_2:
+            mdev->accel_scaler = 16384;
+            break;
+        case MPU6050_ACCEL_RANGE_4:
+            mdev->accel_scaler = 8192;
+            break;
+        case MPU6050_ACCEL_RANGE_8:
+            mdev->accel_scaler = 4096;
+            break;
+        case MPU6050_ACCEL_RANGE_16:
+            mdev->accel_scaler = 2048;
+            break;
+    }
 
     i2c_stop();
     return E_OK;
