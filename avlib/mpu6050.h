@@ -3,10 +3,10 @@
 #include <util/twi.h>
 #include "error.h"
 
-#define MPU6050_REG_ELF_TEST_X 0x0D
-#define MPU6050_REG_ELF_TEST_Y 0x0E
-#define MPU6050_REG_ELF_TEST_Z 0x0F
-#define MPU6050_REG_ELF_TEST_A 0x10
+#define MPU6050_REG_SELF_TEST_X 0x0D
+#define MPU6050_REG_SELF_TEST_Y 0x0E
+#define MPU6050_REG_SELF_TEST_Z 0x0F
+#define MPU6050_REG_SELF_TEST_A 0x10
 
 #define MPU6050_REG_ACCEL_XOUT_H 0x3B
 #define MPU6050_REG_ACCEL_XOUT_L 0x3C
@@ -67,5 +67,5 @@ typedef struct {
     float gyro_scaler;
 } mpu6050_dev_t;
 
-avcerr_t mpu6050_init(mpu6050_dev_t* dev, uint8_t gyro_range, uint8_t accel_range);
-void mpu6050_read(mpu6050_dev_t* mdev);
+avcerr_t mpu6050_init(mpu6050_dev_t* mdev, mpu6050_gyro_range_t mgr, mpu6050_accel_range_t mar);
+avcerr_t mpu6050_read(mpu6050_dev_t* mdev);

@@ -73,7 +73,8 @@ avcerr_t mpu6050_init(mpu6050_dev_t* mdev, mpu6050_gyro_range_t mgr,
     return E_OK;
 }
 
-void mpu6050_read(mpu6050_dev_t* mdev) {
+/* Read sensor data from mpu6050 */
+avcerr_t mpu6050_read(mpu6050_dev_t* mdev) {
     i2c_start();
     // send 7 bit i2c address of mpu6050 + write bit on bus
     // wait for ack from mpu6050
@@ -97,4 +98,5 @@ void mpu6050_read(mpu6050_dev_t* mdev) {
     mdev->reg->gyro_z = (i2c_read_ack() << 8) | i2c_read_nack();
     // Send stop condition
     i2c_stop();
+    return E_OK;
 }
