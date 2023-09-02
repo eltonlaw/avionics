@@ -39,13 +39,14 @@ int main() {
 
         mpu6050_read(&mpu6050_reg);
         log_info(
-            "MPU6050 - Ax: %03u,%03u | Ay: %03u,%03u | Az: %03u,%03u | " "T: %03u,%03u | Gx: %03u,%03u | Gy: %03u,%03u | Gz: %03u,%03u",
-            mpu6050_reg.accel_x_h, mpu6050_reg.accel_x_l,
-            mpu6050_reg.accel_y_h, mpu6050_reg.accel_y_l,
-            mpu6050_reg.accel_z_h, mpu6050_reg.accel_z_l, mpu6050_reg.temp_h,
-            mpu6050_reg.temp_l, mpu6050_reg.gyro_x_h, mpu6050_reg.gyro_x_l,
-            mpu6050_reg.gyro_y_h, mpu6050_reg.gyro_y_l, mpu6050_reg.gyro_z_h,
-            mpu6050_reg.gyro_z_l
+            "MPU6050 - Ax: %05d | Ay: %05d | Az: %05d | T: %05d | Gx: %05d | Gy: %05d | Gz: %05d",
+            mpu6050_reg.accel_x,
+            mpu6050_reg.accel_y,
+            mpu6050_reg.accel_z,
+            mpu6050_reg.temp,
+            mpu6050_reg.gyro_x,
+            mpu6050_reg.gyro_y,
+            mpu6050_reg.gyro_z
         );
     }
     return 0;

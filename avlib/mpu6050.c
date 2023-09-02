@@ -51,20 +51,13 @@ void mpu6050_read(mpu6050_reg_t* reg) {
 
     // burst read, keep sending acks, MPU6050 will
     // auto-inc address being read.
-    reg->accel_x_h = i2c_read_ack();
-    reg->accel_x_l = i2c_read_ack();
-    reg->accel_y_h = i2c_read_ack();
-    reg->accel_y_l = i2c_read_ack();
-    reg->accel_z_h = i2c_read_ack();
-    reg->accel_z_l = i2c_read_ack();
-    reg->temp_h = i2c_read_ack();
-    reg->temp_l = i2c_read_ack();
-    reg->gyro_x_h = i2c_read_ack();
-    reg->gyro_x_l = i2c_read_ack();
-    reg->gyro_y_h = i2c_read_ack();
-    reg->gyro_y_l = i2c_read_ack();
-    reg->gyro_z_h = i2c_read_ack();
-    reg->gyro_z_l = i2c_read_nack();
+    reg->accel_x = (i2c_read_ack() << 8) | i2c_read_ack();
+    reg->accel_y = (i2c_read_ack() << 8) | i2c_read_ack();
+    reg->accel_z = (i2c_read_ack() << 8) | i2c_read_ack();
+    reg->temp = (i2c_read_ack() << 8) | i2c_read_ack();
+    reg->gyro_x = (i2c_read_ack() << 8) | i2c_read_ack();
+    reg->gyro_y = (i2c_read_ack() << 8) | i2c_read_ack();
+    reg->gyro_z = (i2c_read_ack() << 8) | i2c_read_nack();
     // Send stop condition
     i2c_stop();
 }

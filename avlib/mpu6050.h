@@ -43,20 +43,13 @@
 #define MPU6050_I2C_SLA_R (MPU6050_I2C_SLA << 1 | TW_READ)
 
 typedef struct {
-    uint8_t accel_x_h;
-    uint8_t accel_x_l;
-    uint8_t accel_y_h;
-    uint8_t accel_y_l;
-    uint8_t accel_z_h;
-    uint8_t accel_z_l;
-    uint8_t temp_h;
-    uint8_t temp_l;
-    uint8_t gyro_x_h;
-    uint8_t gyro_x_l;
-    uint8_t gyro_y_h;
-    uint8_t gyro_y_l;
-    uint8_t gyro_z_h;
-    uint8_t gyro_z_l;
+    int16_t accel_x;
+    int16_t accel_y;
+    int16_t accel_z;
+    int16_t temp;
+    int16_t gyro_x;
+    int16_t gyro_y;
+    int16_t gyro_z;
 } mpu6050_reg_t;
 
 void mpu6050_init(uint8_t gyro_range, uint8_t accel_range);
