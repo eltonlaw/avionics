@@ -1,6 +1,7 @@
 #pragma once
 
 #include <util/twi.h>
+#include "error.h"
 
 #define MPU6050_REG_ELF_TEST_X 0x0D
 #define MPU6050_REG_ELF_TEST_Y 0x0E
@@ -23,24 +24,32 @@
 #define MPU6050_REG_GYRO_ZOUT_L  0x48
 
 #define MPU6050_REG_PWR_MGMT 0x6B
-#define MPU6050_PWR_MGMT_OFF 0
 
 #define MPU6050_REG_GYRO_CONFIG  0x1B
-#define MPU6050_GYRO_RANGE_250 0
-#define MPU6050_GYRO_RANGE_500 1
-#define MPU6050_GYRO_RANGE_1000 2
-#define MPU6050_GYRO_RANGE_2000 3
-
 #define MPU6050_REG_ACCEL_CONFIG 0x1C
-#define MPU6050_ACCEL_RANGE_2 0
-#define MPU6050_ACCEL_RANGE_4 1
-#define MPU6050_ACCEL_RANGE_8 2
-#define MPU6050_ACCEL_RANGE_16 3
 
 #define MPU6050_I2C_SLA 0x68
 // 7bit address + R/W bit
 #define MPU6050_I2C_SLA_W (MPU6050_I2C_SLA << 1 | TW_WRITE)
 #define MPU6050_I2C_SLA_R (MPU6050_I2C_SLA << 1 | TW_READ)
+
+typedef enum {
+    MPU6050_PWR_MGMT_OFF = 0,
+} mpu6050_pwr_mgmt_t;
+
+typedef enum {
+    MPU6050_GYRO_RANGE_250 = 0,
+    MPU6050_GYRO_RANGE_500,
+    MPU6050_GYRO_RANGE_1000,
+    MPU6050_GYRO_RANGE_2000,
+} mpu6050_gyro_range_t;
+
+typedef enum {
+    MPU6050_ACCEL_RANGE_2 = 0,
+    MPU6050_ACCEL_RANGE_4,
+    MPU6050_ACCEL_RANGE_8,
+    MPU6050_ACCEL_RANGE_16,
+} mpu6050_accel_range_t;
 
 typedef struct {
     int16_t accel_x;
@@ -52,5 +61,11 @@ typedef struct {
     int16_t gyro_z;
 } mpu6050_reg_t;
 
-void mpu6050_init(uint8_t gyro_range, uint8_t accel_range);
-void mpu6050_read(mpu6050_reg_t* reg);
+typedef struct {
+    mpu6050_reg_t* reg;
+    mpu6050_accel_range_t accel_range;
+    mpu6050_gyro_range_t gyro_range;
+} mpu6050_dev_t;
+
+avcerr_t mpu6050_init(mpu6050_dev_t* dev, uint8_t gyro_range, uint8_t accel_range);
+void mpu6050_read(mpu6050_dev_t* mdev);
