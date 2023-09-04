@@ -9,4 +9,5 @@
     │   ├── fc1board: Kicad files
     │   └── src: Firmware
     ├── kicad_sym: Shared symbols lib
+    ├── sensor_calibrate: Test setup for moving
     └── x.sh: Manages building/flashing/testing etc.
