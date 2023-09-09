@@ -9,5 +9,5 @@
     │   ├── fc1board: Kicad files
     │   └── src: Firmware
     ├── kicad_sym: Shared symbols lib
-    ├── sensor_calibrate: Test setup for moving
+    ├── sensor_calibrate: 3d printed test bench for simulating flight. ESP32 webserver connected to a servo.
     └── x.sh: Manages building/flashing/testing etc.
