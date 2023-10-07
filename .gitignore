@@ -2,6 +2,10 @@
 **/*.hex
 **/*.map
 **/*.o
+**/.ninja_log
+**/list_job_1.txt
+**/size_info.txt
+**/__pycache__/
 
 # Kicad
 **/*.bak
@@ -10,4 +14,5 @@
 **/*.zip
 **/*.*.lck
 
-**/build/
+**/build
+**/build_esp32*/
