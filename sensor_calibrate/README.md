@@ -1,8 +1,10 @@
-# sensor_calibrate
+## Dev
 
-## Setup
+Assuming you've followed the [basic setup](../README.md#setup)
+
+Enable the esp environment
 
 ```
-cd $IDF_PATH
-./install.sh esp32c3
+direnv allow .
+idf.py set-target esp32c
 ```
