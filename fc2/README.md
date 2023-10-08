@@ -14,3 +14,9 @@ Run tests
 ```
 ./x.sh test
 ```
+
+Build and Flash
+
+```
+idf.py build flash
+```
