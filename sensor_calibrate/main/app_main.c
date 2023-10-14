@@ -18,6 +18,11 @@
 
 static const char* TAG = __FILE__;
 
+void vTaskFunction(void *pvParams) {
+    for (;;) {
+    }
+}
+
 void app_main(void)
 {
     ESP_LOGI(TAG, "Configuring GPIO pins...");
