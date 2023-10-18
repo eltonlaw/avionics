@@ -9,7 +9,7 @@ OBJDUMP = avr-objdump
 AVRSIZE = avr-size
 AVRDUDE = avrdude
 
-LIBDIR=../../avlib
+LIBDIR=../../avrlib
 
 CFLAGS = -Os -g -std=gnu99 -Wall
 # Needed by delay.h

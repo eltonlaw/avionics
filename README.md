@@ -1,6 +1,6 @@
-# avionics
+# robotics
 
-    ├── avlib: Shared utils
+    ├── avrlib: Shared utils
     ├── devtools: miscellaneous local dev stuff
     │   ├── blinky: Basic hex file to flash for testing hardware
     │   ├── cli: To replace x.sh
