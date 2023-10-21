@@ -8,15 +8,19 @@ except:
 
 DEV_FP = "/dev"
 
-def start():
+def start(baud=115200):
     global ser
-    ports = [f"{DEV_FP}/{d}" for d in os.listdir(f"{DEV_FP}/") if d.startswith("ttyUSB")]
+    ports = [
+        f"{DEV_FP}/{d}"
+         for d in os.listdir(f"{DEV_FP}/")
+         if d.startswith("ttyUSB") or d.startswith("ttyACM")
+     ]
     print(f"Found ports: {ports}")
     for port in ports:
         try:
             ser = serial.Serial(
                 port=port,
-                baudrate=9600,
+                baudrate=baud,
                 bytesize=serial.EIGHTBITS,
                 timeout=5,
                 stopbits=serial.STOPBITS_ONE
