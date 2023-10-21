@@ -21,7 +21,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <string.h>
+#include "mpu6050.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -31,9 +32,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define MPU6050_I2C_SLA 0x68;
-#define MPU6050_I2C_SLA_W (MPU6050_I2C_SLA << 1 | 0);
-#define MPU6050_I2C_SLA_W (MPU6050_I2C_SLA << 1 | 1);
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -72,6 +71,7 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
   uint8_t buf[12];
+  HAL_StatusTypeDef ret;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -102,7 +102,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	strcpy((char*) buf, "Hello!\r\n");
+	buf[0] = hello();
 	HAL_UART_Transmit(&huart2, buf, strlen((char*) buf), HAL_MAX_DELAY);
     /* USER CODE END WHILE */
 
