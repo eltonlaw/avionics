@@ -43,7 +43,7 @@ typedef struct {
     double accel_scaler;
     double gyro_scaler;
     I2C_HandleTypeDef* i2cx;
-} mpu6050_config_t;
+} mpu6050_cfg_t;
 
-error_t mpu6050_init(I2C_HandleTypeDef* i2cx);
-error_t mpu6050_read(I2C_HandleTypeDef *i2cx, mpu6050_data_t *data);
+error_t mpu6050_init(mpu6050_cfg_t* cfg, I2C_HandleTypeDef* i2cx);
+error_t mpu6050_read(mpu6050_cfg_t* cfg, mpu6050_data_t *data);
