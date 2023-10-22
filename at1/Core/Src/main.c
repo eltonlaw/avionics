@@ -70,7 +70,7 @@ static void MX_I2C1_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-  uint8_t buf[12];
+  char msg[200];  // Buffer for your message
   HAL_StatusTypeDef ret;
   /* USER CODE END 1 */
 
@@ -95,15 +95,26 @@ int main(void)
   MX_USART2_UART_Init();
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
-
+  mpu6050_init(&hi2c1);
+  strcpy(msg, "Initialization finished");
+  HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), HAL_MAX_DELAY);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	buf[0] = hello();
-	HAL_UART_Transmit(&huart2, buf, strlen((char*) buf), HAL_MAX_DELAY);
+//	strcpy(msg, "loop starting...");
+//    HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), HAL_MAX_DELAY);
+	mpu6050_data_t mpu6050_data;
+	mpu6050_read(&hi2c1, &mpu6050_data);
+	sprintf(msg, "Accel(X:%lf, Y:%lf, Z:%lf), Temp:%lf, Gyro(X:%lf, Y:%lf, Z:%lf)\r\n",
+			mpu6050_data.accel_x, mpu6050_data.accel_y, mpu6050_data.accel_z,
+			mpu6050_data.temperature,
+			mpu6050_data.gyro_x, mpu6050_data.gyro_y, mpu6050_data.gyro_z);
+	HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), HAL_MAX_DELAY);
+	// buf[0] = hello();
+	// HAL_UART_Transmit(&huart2, buf, strlen((char*) buf), HAL_MAX_DELAY);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -216,7 +227,7 @@ static void MX_USART2_UART_Init(void)
   /* USER CODE END USART2_Init 1 */
   huart2.Instance = USART2;
   huart2.Init.BaudRate = 115200;
-  huart2.Init.WordLength = UART_WORDLENGTH_7B;
+  huart2.Init.WordLength = UART_WORDLENGTH_8B;
   huart2.Init.StopBits = UART_STOPBITS_1;
   huart2.Init.Parity = UART_PARITY_NONE;
   huart2.Init.Mode = UART_MODE_TX_RX;

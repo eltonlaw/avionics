@@ -1,5 +1,6 @@
 #include <math.h>
 #include <stdint.h>
+#include "stm32g0xx.h"
 #include "error.h"
 
 #define MPU6050_WHO_AM_I_REG 0x75
@@ -9,7 +10,38 @@
 #define MPU6050_TEMP_OUT_H_REG 0x41
 #define MPU6050_GYRO_CONFIG_REG 0x1B
 #define MPU6050_GYRO_XOUT_H_REG 0x43
-#define MPU6050_ADDR 0xD0
+#define MPU6050_ADDR (0x68 << 1)
+
+#define MPU6050_PWR_MGMT_OFF 0
+
+typedef enum {
+    MPU6050_GYRO_RANGE_250 = 0,
+    MPU6050_GYRO_RANGE_500,
+    MPU6050_GYRO_RANGE_1000,
+    MPU6050_GYRO_RANGE_2000,
+} mpu6050_gyro_range_t;
+
+typedef enum {
+    MPU6050_ACCEL_RANGE_2 = 0,
+    MPU6050_ACCEL_RANGE_4,
+    MPU6050_ACCEL_RANGE_8,
+    MPU6050_ACCEL_RANGE_16,
+} mpu6050_accel_range_t;
+
+typedef struct {
+    double accel_x;
+    double accel_y;
+    double accel_z;
+    double temperature;
+    double gyro_x;
+    double gyro_y;
+    double gyro_z;
+} mpu6050_data_t;
+
+typedef struct {
+    double accel_scaler;
+    double gyro_scaler;
+} mpu6050_config_t;
 
 uint8_t hello();
-error_t mpu6050_init(I2C_HandleTypeDef);
+error_t mpu6050_init(I2C_HandleTypeDef*);

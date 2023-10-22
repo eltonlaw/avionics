@@ -2,6 +2,7 @@
 
 #include <util/twi.h>
 #include "error.h"
+#include "stm32g0xx_hal_i2c.h"
 
 #define MPU6050_REG_SELF_TEST_X 0x0D
 #define MPU6050_REG_SELF_TEST_Y 0x0E
