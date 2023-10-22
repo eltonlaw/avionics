@@ -44,5 +44,5 @@ typedef struct {
     double gyro_scaler;
 } mpu6050_config_t;
 
-uint8_t hello();
-error_t mpu6050_init(I2C_HandleTypeDef*);
+error_t mpu6050_init(I2C_HandleTypeDef* i2cx);
+void mpu6050_read(I2C_HandleTypeDef *i2cx, mpu6050_data_t *data);
