@@ -22,6 +22,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <string.h>
+#include <stdio.h>
 #include "mpu6050.h"
 /* USER CODE END Includes */
 
@@ -113,8 +114,6 @@ int main(void)
 			mpu6050_data.temperature,
 			mpu6050_data.gyro_x, mpu6050_data.gyro_y, mpu6050_data.gyro_z);
 	HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), HAL_MAX_DELAY);
-	// buf[0] = hello();
-	// HAL_UART_Transmit(&huart2, buf, strlen((char*) buf), HAL_MAX_DELAY);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
