@@ -23,6 +23,7 @@
 /* USER CODE BEGIN Includes */
 #include <string.h>
 #include <stdio.h>
+#include "log.h"
 #include "mpu6050.h"
 /* USER CODE END Includes */
 
@@ -97,9 +98,9 @@ int main(void)
   MX_USART2_UART_Init();
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
+  log_init(&huart2, LOG_LEVEL_INFO);
   mpu6050_init(&mpu6050_cfg, &hi2c1);
-  sprintf(msg, "Initialized MPU6050 accel_scaler=%lf, gyro_scaler=%lf", mpu6050_cfg.accel_scaler, mpu6050_cfg.gyro_scaler);
-  HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), HAL_MAX_DELAY);
+  log_info("Initialized MPU6050 accel_scaler=%lf, gyro_scaler=%lf", mpu6050_cfg.accel_scaler, mpu6050_cfg.gyro_scaler);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -107,11 +108,10 @@ int main(void)
   while (1)
   {
 	mpu6050_read(&mpu6050_cfg, &mpu6050_data);
-	sprintf(msg, "Accel(X:%lf, Y:%lf, Z:%lf), Temp:%lf, Gyro(X:%lf, Y:%lf, Z:%lf)\r\n",
+	log_info("Accel(X:%lf, Y:%lf, Z:%lf), Temp:%lf, Gyro(X:%lf, Y:%lf, Z:%lf)\r\n",
 			mpu6050_data.accel_x, mpu6050_data.accel_y, mpu6050_data.accel_z,
 			mpu6050_data.temperature,
 			mpu6050_data.gyro_x, mpu6050_data.gyro_y, mpu6050_data.gyro_z);
-	HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), HAL_MAX_DELAY);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
