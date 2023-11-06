@@ -72,7 +72,6 @@ static void MX_I2C1_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-  char msg[200];  // Buffer for your message
   mpu6050_cfg_t mpu6050_cfg;
   mpu6050_data_t mpu6050_data;
   /* USER CODE END 1 */
@@ -100,7 +99,15 @@ int main(void)
   /* USER CODE BEGIN 2 */
   log_init(&huart2, LOG_LEVEL_INFO);
   mpu6050_init(&mpu6050_cfg, &hi2c1);
-  log_info("Initialized MPU6050 accel_scaler=%lf, gyro_scaler=%lf", mpu6050_cfg.accel_scaler, mpu6050_cfg.gyro_scaler);
+  log_info("Initialized MPU6050 accel_scaler=%lf, gyro_scaler=%lf, accel_offset=(x:%lf, y:%lf, z:%lf), gyro_offset=(x:%lf, y:%lf, z:%lf)",
+      mpu6050_cfg.accel_scaler,
+      mpu6050_cfg.gyro_scaler,
+      mpu6050_cfg.offset.accel_x,
+      mpu6050_cfg.offset.accel_y,
+      mpu6050_cfg.offset.accel_z,
+      mpu6050_cfg.offset.gyro_x,
+      mpu6050_cfg.offset.gyro_y,
+      mpu6050_cfg.offset.gyro_z);
   /* USER CODE END 2 */
 
   /* Infinite loop */
