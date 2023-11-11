@@ -13,3 +13,6 @@
 [submodule "physics_sim/glitter/vendor/bullet"]
 	path = physics_sim/glitter/vendor/bullet
 	url = git@github.com:bulletphysics/bullet3.git
+[submodule "physics_sim/glitter/vendor/glad"]
+	path = physics_sim/glitter/vendor/glad
+	url = git@github.com:Dav1dde/glad.git
