@@ -1,9 +1,6 @@
 [submodule "physics_sim/glitter/vendor/assimp"]
 	path = physics_sim/glitter/vendor/assimp
 	url = git@github.com:assimp/assimp.git
-[submodule "physics_sim/glitter/vendor/glad"]
-	path = physics_sim/glitter/vendor/glad
-	url = git@github.com:Dav1dde/glad.git
 [submodule "physics_sim/glitter/vendor/glfw"]
 	path = physics_sim/glitter/vendor/glfw
 	url = git@github.com:glfw/glfw.git

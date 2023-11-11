@@ -1,20 +1,22 @@
 #!/usr/bin/env bash
+set -e
+
+CLI_BUILD_DIR=devtools/cli/build
+
+build() {
+  cmake -B$CLI_BUILD_DIR $CLI_BUILD_DIR/..
+  make -C $CLI_BUILD_DIR clean
+  make -C $CLI_BUILD_DIR
+}
 
 case "$1" in
-  "serial")
-    ipython -i -c "%load devtools/serial_interactive.py"
+  init)
+    git submodule update --init --recursive
+    mkdir -p $CLI_BUILD_DIR
+    build
     ;;
-  "avr-gcc")
-	avr-gcc -print-search-dirs
-    ;;
-  "fc1")
-    cd fc1 && make clean && make flash
-    ;;
-  "sensor-calibrate")
-    cd sensor_calibrate && idf.py build
-    ;;
+  build) build;;
   *)
-    (cd devtools && make build)
     ./devtools/cli/build/cli "$@"
     ;;
 esac
