@@ -9,40 +9,56 @@
 #include <cstdio>
 #include <cstdlib>
 
+static void error_callback(int error, const char* description) {
+    fprintf(stderr, "Error: %s\n", description);
+}
+
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, GLFW_TRUE);
+}
+
 int main(int argc, char * argv[]) {
+    glfwSetErrorCallback(error_callback);
 
     // Load GLFW and Create a Window
-    glfwInit();
+    if (glfwInit() == false) {
+        fprintf(stderr, "Failed to Initialize GLFW");
+        exit(EXIT_FAILURE);
+    }
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-    auto mWindow = glfwCreateWindow(mWidth, mHeight, "OpenGL", nullptr, nullptr);
+    auto window = glfwCreateWindow(mWidth, mHeight, "OpenGL", nullptr, nullptr);
 
     // Check for Valid Context
-    if (mWindow == nullptr) {
+    if (window == nullptr) {
         fprintf(stderr, "Failed to Create OpenGL Context");
-        return EXIT_FAILURE;
+        exit(EXIT_FAILURE);
     }
 
     // Create Context and Load OpenGL Functions
-    glfwMakeContextCurrent(mWindow);
+    glfwMakeContextCurrent(window);
     gladLoadGL();
-    fprintf(stderr, "OpenGL %s\n", glGetString(GL_VERSION));
+    glfwSwapInterval(1);
+    glfwSetKeyCallback(window, key_callback);
+    fprintf(stdout, "OpenGL %s\n", glGetString(GL_VERSION));
 
     // Rendering Loop
-    while (glfwWindowShouldClose(mWindow) == false) {
-        if (glfwGetKey(mWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-            glfwSetWindowShouldClose(mWindow, true);
-
+    while (glfwWindowShouldClose(window) == false) {
         // Background Fill Color
         glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // Flip Buffers and Draw
-        glfwSwapBuffers(mWindow);
+        // Swap front and back buffers
+        glfwSwapBuffers(window);
+        // Check if any events are triggered and update windows state, calling
+        // any corresponding callbacks and returns immediately
         glfwPollEvents();
-    }   glfwTerminate();
-    return EXIT_SUCCESS;
+    }
+    glfwDestroyWindow(window);
+    glfwTerminate();
+    exit(EXIT_SUCCESS);
 }
