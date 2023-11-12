@@ -31,10 +31,11 @@ int main(int argc, char * argv[]) {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-    auto window = glfwCreateWindow(mWidth, mHeight, "OpenGL", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(mWidth, mHeight, "Simulator", nullptr, nullptr);
 
     // Check for Valid Context
     if (window == nullptr) {
+        glfwTerminate();
         fprintf(stderr, "Failed to Create OpenGL Context");
         exit(EXIT_FAILURE);
     }
