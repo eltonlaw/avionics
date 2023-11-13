@@ -115,7 +115,7 @@ int main(void)
   while (1)
   {
 	mpu6050_read(&mpu6050_cfg, &mpu6050_data);
-	log_info("Accel(X:%lf, Y:%lf, Z:%lf), Temp:%lf, Gyro(X:%lf, Y:%lf, Z:%lf)\r\n",
+	log_info("Accel(X:%lfG, Y:%lfG, Z:%lfG), Temp:%lf, Gyro(X:%lf, Y:%lf, Z:%lf)\r\n",
 			mpu6050_data.accel_x, mpu6050_data.accel_y, mpu6050_data.accel_z,
 			mpu6050_data.temperature,
 			mpu6050_data.gyro_x, mpu6050_data.gyro_y, mpu6050_data.gyro_z);

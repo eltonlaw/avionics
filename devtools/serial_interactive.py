@@ -49,7 +49,9 @@ def rl():
 
 def loop_rl():
     while True:
-        print(rl())
+        line = rl()
+        if line != b"":
+            print(line)
 
 # w(b'H')
 # r()
