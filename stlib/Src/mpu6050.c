@@ -37,7 +37,8 @@ error_t mpu6050_calibrate(mpu6050_cfg_t* cfg) {
         };
         offset.accel_x = offset.accel_x + (data.accel_x - offset.accel_x) / i;
         offset.accel_y = offset.accel_y + (data.accel_y - offset.accel_y) / i;
-        offset.accel_z = offset.accel_z + (data.accel_z - offset.accel_z) / i;
+        // sensor should be positions such that it is facing away from earth
+        offset.accel_z = offset.accel_z + (data.accel_z - offset.accel_z - 1) / i;
         offset.gyro_x = offset.gyro_x + (data.gyro_x - offset.gyro_x) / i;
         offset.gyro_y = offset.gyro_y + (data.gyro_y - offset.gyro_y) / i;
         offset.gyro_z = offset.gyro_z + (data.gyro_z - offset.gyro_z) / i;

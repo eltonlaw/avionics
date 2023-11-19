@@ -55,16 +55,22 @@ avcerr_t mpu6050_init(mpu6050_dev_t* mdev, mpu6050_gyro_range_t mgr,
     i2c_write_data(MPU6050_REG_ACCEL_CONFIG);
     i2c_write_data(accel_config);
     switch(mar) {
+        // Convert raw data from accelerometer into units of g. Raw data is
+        // a 16 bit signed integer [-32768, 32767]
         case MPU6050_ACCEL_RANGE_2:
+            // [-2g, +2g] 32768 / 2 = 16384
             mdev->accel_scaler = 16384;
             break;
         case MPU6050_ACCEL_RANGE_4:
+            // [-4g, +4g] 32768 / 4 = 8192
             mdev->accel_scaler = 8192;
             break;
         case MPU6050_ACCEL_RANGE_8:
+            // [-8g, +8g] 32768 / 8 = 4096
             mdev->accel_scaler = 4096;
             break;
         case MPU6050_ACCEL_RANGE_16:
+            // [-16g, +16g] 32768 / 16 = 2048
             mdev->accel_scaler = 2048;
             break;
     }
