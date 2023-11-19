@@ -16,3 +16,6 @@
 
 **/build
 **/build_esp32*/
+
+# stm32cubeide
+**/Debug
