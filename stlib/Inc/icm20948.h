@@ -1,7 +1,14 @@
 /*
  * icm20948 can do I2C at 400kHz or SPI at 7MHz
  * SDA and SCL lines need pull-up resistors to VDD
+ *
+ * GYRO_FS_SEL=0 +=250
+ * GYRO_FS_SEL=1 +=500
+ * GYRO_FS_SEL=2 +=1000
+ * GYRO_FS_SEL=3 +=2000
  */
+#include "stm32g0xx.h"
+#include "error.h"
 
 // 7:6 and 3:0 unused. Set 5:4 to 0 for B0, 1 for B1, 2 for B2, 3 for B3
 #define ICM20948_BANK0 0b00000000
@@ -14,87 +21,44 @@
 #define ICM20948_I2C_ADDR1 0b1101001
 
 // REG_BANK_SEL defined on every register as 0x7F
-#define ICM20948_REG_BANK_SEL 0x7F // Selects a user bank
+#define ICM20948_REG_BANK_SEL_REG 0x7F // Selects a user bank
 
 /* User bank 0 registers */
+#define ICM20948_WHO_AM_I_REG 0x00
 // Next 10 registers are accel (3D), gyro (3D) and temp output H/L registers
-#define ICM20948_ACCEL_XOUT_H 0x2D
+#define ICM20948_ACCEL_XOUT_H_REG 0x2D
+// Default: 0x41. Sleep enabled by default. Set bit 7 to reset
+#define ICM20948_PWR_MGMT_1_REG 0x06
+// Default: 0x00. Set [5:3] to 111 to disable all accels, set [2:0] to 111 to disable gyros
+#define ICM20948_PWR_MGMT_2_REG 0x07
 
-                                   //
-void icm20948_init(void) {
-    // Set user bank 0
-}
+/* User bank 1 registers */
+#define ICM20948_XA_OFFS_H 0x14
+#define ICM20948_XA_OFFS_L 0x15
+#define ICM20948_YA_OFFS_H 0x17
+#define ICM20948_YA_OFFS_L 0x18
+#define ICM20948_ZA_OFFS_H 0x1A
+#define ICM20948_ZA_OFFS_L 0x1B
 
-void icm20948_init(void) {
-    // Set user bank 0
-    i2c_write(ICM20948_I2C_ADDR0, ICM20948_REG_BANK_SEL, ICM20948_BANK0);
-    // Set sample rate divider to 0
-    i2c_write(ICM20948_I2C_ADDR0, 0x00, 0x00);
-    // Set gyro full scale range to 250dps
-    i2c_write(ICM20948_I2C_ADDR0, 0x01, 0x00);
-    // Set accel full scale range to 2g
-    i2c_write(ICM20948_I2C_ADDR0, 0x02, 0x00);
-    // Set DLPF to 17Hz
-    i2c_write(ICM20948_I2C_ADDR0, 0x03, 0x01);
-    // Set gyro DLPF to 17Hz
-    i2c_write(ICM20948_I2C_ADDR0, 0x04, 0x01);
-    // Set sample rate divider to 0
-    i2c_write(ICM20948_I2C_ADDR0, 0x00, 0x00);
-    // Set user bank 2
-    i2c_write(ICM20948_I2C_ADDR0, ICM20948_REG_BANK_SEL, ICM20948_BANK2);
-    // Set accel DLPF to 17Hz
-    i2c_write(ICM20948_I2C_ADDR0, 0x0C, 0x01);
-    // Set user bank 0
-    i2c_write(ICM20948_I2C_ADDR0, ICM20948_REG_BANK_SEL, ICM20948_BANK0);
-    // Set power management 1 to wake up
-    i2c_write(ICM20948_I2C_ADDR0, 0x06, 0x01);
-}
-void icm20948_init(void) {
-    // Set user bank 0
-    i2c_write(ICM20948_I2C_ADDR0, ICM20948_REG_BANK_SEL, ICM20948_BANK0);
-    // Set sample rate divider to 0
-    i2c_write(ICM20948_I2C_ADDR0, 0x00, 0x00);
-    // Set gyro full scale range to 250dps
-    i2c_write(ICM20948_I2C_ADDR0, 0x01, 0x00);
-    // Set accel full scale range to 2g
-    i2c_write(ICM20948_I2C_ADDR0, 0x02, 0x00);
-    // Set DLPF to 17Hz
-    i2c_write(ICM20948_I2C_ADDR0, 0x03, 0x01);
-    // Set gyro DLPF to 17Hz
-    i2c_write(ICM20948_I2C_ADDR0, 0x04, 0x01);
-    // Set sample rate divider to 0
-    i2c_write(ICM20948_I2C_ADDR0, 0x00, 0x00);
-    // Set user bank 2
-    i2c_write(ICM20948_I2C_ADDR0, ICM20948_REG_BANK_SEL, ICM20948_BANK2);
-    // Set accel DLPF to 17Hz
-    i2c_write(ICM20948_I2C_ADDR0, 0x0C, 0x01);
-    // Set user bank 0
-    i2c_write(ICM20948_I2C_ADDR0, ICM20948_REG_BANK_SEL, ICM20948_BANK0);
-    // Set power management 1 to wake up
-    i2c_write(ICM20948_I2C_ADDR0, 0x06, 0x01);
-}
+typedef struct {
+    double accel_x;
+    double accel_y;
+    double accel_z;
+    double temperature;
+    double gyro_x;
+    double gyro_y;
+    double gyro_z;
+} icm20948_data_t;
 
-void icm20948_init(void) {
-    // Set user bank 0
-    i2c_write(ICM20948_I2C_ADDR0, ICM20948_REG_BANK_SEL, ICM20948_BANK0);
-    // Set sample rate divider to 0
-    i2c_write(ICM20948_I2C_ADDR0, 0x00, 0x00);
-    // Set gyro full scale range to 250dps
-    i2c_write(ICM20948_I2C_ADDR0, 0x01, 0x00);
-    // Set accel full scale range to 2g
-    i2c_write(ICM20948_I2C_ADDR0, 0x02, 0x00);
-    // Set DLPF to 17Hz
-    i2c_write(ICM20948_I2C_ADDR0, 0x03, 0x01);
-    // Set gyro DLPF to 17Hz
-    i2c_write(ICM20948_I2C_ADDR0, 0x04, 0x01);
-    // Set sample rate divider to 0
-    i2c_write(ICM20948_I2C_ADDR0, 0x00, 0x00);
-    // Set user bank 2
-    i2c_write(ICM20948_I2C_ADDR0, ICM20948_REG_BANK_SEL, ICM20948_BANK2);
-    // Set accel DLPF to 17Hz
-    i2c_write(ICM20948_I2C_ADDR0, 0x0C, 0x01);
-    // Set user bank 0
-    i2c_write(ICM20948_I2C_ADDR0, ICM20948_REG_BANK_SEL, ICM20948_BANK0);
-    // Set power management 1 to wake up
-    i2c_write(ICM20948_I2C_ADDR0, 0x06, 0x01);
-}
+typedef struct {
+    double accel_scaler;
+    double gyro_scaler;
+    double temperature_offset;
+    double temperature_scaler;
+    I2C_HandleTypeDef* i2cx;
+} icm20948_cfg_t;
+
+error_t icm20948_selftest(icm20948_cfg_t* cfg);
+error_t icm20948_read(icm20948_cfg_t* cfg, icm20948_data_t *data);
+error_t icm20948_calibrate(icm20948_cfg_t* cfg);
+error_t icm20948_init(icm20948_cfg_t* cfg, I2C_HandleTypeDef* i2cx);

@@ -8,6 +8,7 @@ enum error_t {
     E_HAL_TIMEOUT = HAL_TIMEOUT,
     E_OK,
     E_I2C_WRONG_DEVICE,
+    E_WRONG_WHOAMI,
     // Catch all, discouraged
     E_UNKNOWN,
 };
