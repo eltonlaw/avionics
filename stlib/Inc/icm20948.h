@@ -33,12 +33,17 @@
 #define ICM20948_PWR_MGMT_2_REG 0x07
 
 /* User bank 1 registers */
-#define ICM20948_XA_OFFS_H 0x14
-#define ICM20948_XA_OFFS_L 0x15
-#define ICM20948_YA_OFFS_H 0x17
-#define ICM20948_YA_OFFS_L 0x18
-#define ICM20948_ZA_OFFS_H 0x1A
-#define ICM20948_ZA_OFFS_L 0x1B
+#define ICM20948_XA_OFFS_H_REG 0x14
+#define ICM20948_XA_OFFS_L_REG 0x15
+#define ICM20948_YA_OFFS_H_REG 0x17
+#define ICM20948_YA_OFFS_L_REG 0x18
+#define ICM20948_ZA_OFFS_H_REG 0x1A
+#define ICM20948_ZA_OFFS_L_REG 0x1B
+
+/* User bank 2 registers */
+#define ICM20948_GYRO_SMPLRT_DIV_REG 0x00
+#define ICM20948_GYRO_CONFIG_1_REG 0x01
+#define ICM20948_GYRO_CONFIG_2_REG 0x01
 
 typedef struct {
     double accel_x;

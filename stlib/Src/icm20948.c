@@ -69,7 +69,6 @@ error_t icm20948_init(icm20948_cfg_t* cfg, I2C_HandleTypeDef* i2cx) {
         return (error_t) status;
     }
 
-    // Set sample rate divider to 0
     // Set gyro full scale range to 250dps
     // Set accel full scale range to 2g
     // Set DLPF to 17Hz
