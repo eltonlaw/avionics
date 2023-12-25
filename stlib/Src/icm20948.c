@@ -1,8 +1,5 @@
 #include "icm20948.h"
 
-const uint16_t i2c_timeout = 100;
-const double Accel_Z_corrector = 14418.0;
-
 error_t icm20948_selftest(icm20948_cfg_t* cfg) {
     // Get diff of sensor outputs with ST enabled and w/o ST enabled
     // Check diff within specified min/max limits.
@@ -10,7 +7,9 @@ error_t icm20948_selftest(icm20948_cfg_t* cfg) {
 }
 
 error_t icm20948_sel_bank(icm20948_cfg_t* cfg, uint8_t bank) {
-    HAL_StatusTypeDef status = HAL_I2C_Mem_Write(cfg->i2cx, ICM20948_ADDR0, ICM20948_REG_BANK_SEL_REG, 1, bank, 1, HAL_MAX_DELAY);
+    uint8_t buf[1];
+    buf[0] = bank;
+    HAL_StatusTypeDef status = HAL_I2C_Mem_Write(cfg->i2cx, ICM20948_I2C_ADDR0, ICM20948_REG_BANK_SEL_REG, 1, buf, 1, HAL_MAX_DELAY);
     if (status != HAL_OK) {
         return (error_t) status;
     }
@@ -27,7 +26,7 @@ error_t icm20948_read(icm20948_cfg_t* cfg, icm20948_data_t *data) {
     uint8_t buf[14];
     HAL_StatusTypeDef status;
 
-    status = HAL_I2C_Mem_Read(cfg->i2cx, ICM20948_ADDR, ICM20948_ACCEL_XOUT_H_REG, 1, buf, 14, HAL_MAX_DELAY);
+    status = HAL_I2C_Mem_Read(cfg->i2cx, ICM20948_I2C_ADDR0, ICM20948_ACCEL_XOUT_H_REG, 1, buf, 14, HAL_MAX_DELAY);
     if (status != HAL_OK) {
         return (error_t) status;
     }
@@ -51,20 +50,21 @@ error_t icm20948_calibrate(icm20948_cfg_t* cfg) {
 error_t icm20948_init(icm20948_cfg_t* cfg, I2C_HandleTypeDef* i2cx) {
     error_t err;
     HAL_StatusTypeDef status;
-    uint8_t buf;
+    uint8_t buf[1];
 
-    status = HAL_I2C_Mem_Read(cfg->i2cx, ICM20948_ADDR, ICM20948_WHO_AM_I_REG, 1, buf, 1, HAL_MAX_DELAY);
-    if (buf != 0xEA)
+    status = HAL_I2C_Mem_Read(cfg->i2cx, ICM20948_I2C_ADDR0, ICM20948_WHO_AM_I_REG, 1, buf, 1, HAL_MAX_DELAY);
+    if (buf[0] != 0xEA)
         return E_WRONG_WHOAMI;
+    log_info("WHO_AM_I matched 0xEA");
 
     // Bank 0 mods
-    if (err = icm20948_sel_bank(&cfg, ICM20948_BANK0) != E_OK)
+    if ((err = icm20948_sel_bank(cfg, ICM20948_BANK0) != E_OK))
         return err;
 
     // Turn on; Disable the SLEEP pin on bit 6 (NOTE: [7:0])
     // 0x41 is default value
-    buf = 0x41 & ~(1 << 6);
-    status = HAL_I2C_Mem_Write(cfg->i2cx, ICM20948_ADDR0, ICM20948_PWR_MGMT_1_REG, 1, buff, 1, HAL_MAX_DELAY);
+    buf[0] = 0x41 & ~(1 << 6);
+    status = HAL_I2C_Mem_Write(cfg->i2cx, ICM20948_I2C_ADDR0, ICM20948_PWR_MGMT_1_REG, 1, buf, 1, HAL_MAX_DELAY);
     if (status != HAL_OK) {
         return (error_t) status;
     }

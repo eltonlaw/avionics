@@ -9,6 +9,7 @@
  */
 #include "stm32g0xx.h"
 #include "error.h"
+#include "log.h"
 
 // 7:6 and 3:0 unused. Set 5:4 to 0 for B0, 1 for B1, 2 for B2, 3 for B3
 #define ICM20948_BANK0 0b00000000

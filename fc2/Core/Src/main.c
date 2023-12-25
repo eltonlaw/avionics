@@ -24,7 +24,7 @@
 #include <string.h>
 #include <stdio.h>
 #include "log.h"
-#include "mpu6050.h"
+#include "icm20948.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -72,8 +72,8 @@ static void MX_I2C1_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-  mpu6050_cfg_t mpu6050_cfg;
-  mpu6050_data_t mpu6050_data;
+  icm20948_cfg_t icm20948_cfg;
+  icm20948_data_t icm20948_data;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -98,27 +98,22 @@ int main(void)
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
   log_init(&huart2, LOG_LEVEL_INFO);
-  mpu6050_init(&mpu6050_cfg, &hi2c1);
-  log_info("Initialized MPU6050 accel_scaler=%lf, gyro_scaler=%lf, accel_offset=(x:%lf, y:%lf, z:%lf), gyro_offset=(x:%lf, y:%lf, z:%lf)",
-      mpu6050_cfg.accel_scaler,
-      mpu6050_cfg.gyro_scaler,
-      mpu6050_cfg.offset.accel_x,
-      mpu6050_cfg.offset.accel_y,
-      mpu6050_cfg.offset.accel_z,
-      mpu6050_cfg.offset.gyro_x,
-      mpu6050_cfg.offset.gyro_y,
-      mpu6050_cfg.offset.gyro_z);
+  icm20948_init(&icm20948_cfg, &hi2c1);
+  log_info("Initialized ICM20948 accel_scaler=%lf, gyro_scaler=%lf, temperature_scaler=%lf",
+      icm20948_cfg.accel_scaler,
+      icm20948_cfg.gyro_scaler,
+      icm20948_cfg.temperature_scaler);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	mpu6050_read(&mpu6050_cfg, &mpu6050_data);
+	icm20948_read(&icm20948_cfg, &icm20948_data);
 	log_info("Accel(X:%lfG, Y:%lfG, Z:%lfG), Temp:%lf, Gyro(X:%lf, Y:%lf, Z:%lf)\r\n",
-			mpu6050_data.accel_x, mpu6050_data.accel_y, mpu6050_data.accel_z,
-			mpu6050_data.temperature,
-			mpu6050_data.gyro_x, mpu6050_data.gyro_y, mpu6050_data.gyro_z);
+			icm20948_data.accel_x, icm20948_data.accel_y, icm20948_data.accel_z,
+			icm20948_data.temperature,
+			icm20948_data.gyro_x, icm20948_data.gyro_y, icm20948_data.gyro_z);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
