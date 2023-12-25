@@ -74,6 +74,7 @@ int main(void)
   /* USER CODE BEGIN 1 */
   icm20948_cfg_t icm20948_cfg;
   icm20948_data_t icm20948_data;
+  error_t err;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -98,7 +99,9 @@ int main(void)
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
   log_init(&huart2, LOG_LEVEL_INFO);
-  icm20948_init(&icm20948_cfg, &hi2c1);
+  log_info("Initializing icm20948 driver");
+  if ((err = icm20948_init(&icm20948_cfg, &hi2c1) != E_OK))
+	  panic("Failed to initialize icm20948 driver: %s", error_name(err));
   log_info("Initialized ICM20948 accel_scaler=%lf, gyro_scaler=%lf, temperature_scaler=%lf",
       icm20948_cfg.accel_scaler,
       icm20948_cfg.gyro_scaler,

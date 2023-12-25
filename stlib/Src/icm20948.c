@@ -54,22 +54,28 @@ error_t icm20948_init(icm20948_cfg_t* cfg, I2C_HandleTypeDef* i2cx) {
 
     cfg->i2cx = i2cx;
 
-    status = HAL_I2C_Mem_Read(cfg->i2cx, ICM20948_I2C_ADDR0, ICM20948_WHO_AM_I_REG, 1, buf, 1, HAL_MAX_DELAY);
-    if (buf[0] != 0xEA)
-        return E_WRONG_WHOAMI;
-    log_info("WHO_AM_I matched 0xEA");
-
-    // Bank 0 mods
+    // Bank 0 code
+    log_info("Checking whoami");
     if ((err = icm20948_sel_bank(cfg, ICM20948_BANK0) != E_OK))
         return err;
+    status = HAL_I2C_Mem_Read(cfg->i2cx, ICM20948_I2C_ADDR0, ICM20948_WHO_AM_I_REG, 1, buf, 1, HAL_MAX_DELAY);
+    log_error("Finished reading whoami");
+    if (buf[0] != 0xEA) {
+        log_info("Got the wrong whoami %x", buf[0]);
+        return E_WRONG_WHOAMI;
+    }
+    log_info("WHO_AM_I matched 0xEA");
+
 
     // Turn on; Disable the SLEEP pin on bit 6 (NOTE: [7:0])
     // 0x41 is default value
     buf[0] = 0x41 & ~(1 << 6);
     status = HAL_I2C_Mem_Write(cfg->i2cx, ICM20948_I2C_ADDR0, ICM20948_PWR_MGMT_1_REG, 1, buf, 1, HAL_MAX_DELAY);
-    if (status != HAL_OK) {
+    if (status != HAL_OK)
         return (error_t) status;
-    }
+
+    if ((err = icm20948_calibrate(cfg) != E_OK))
+        return err;
 
     // Set gyro full scale range to 250dps
     // Set accel full scale range to 2g
