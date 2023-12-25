@@ -52,6 +52,8 @@ error_t icm20948_init(icm20948_cfg_t* cfg, I2C_HandleTypeDef* i2cx) {
     HAL_StatusTypeDef status;
     uint8_t buf[1];
 
+    cfg->i2cx = i2cx;
+
     status = HAL_I2C_Mem_Read(cfg->i2cx, ICM20948_I2C_ADDR0, ICM20948_WHO_AM_I_REG, 1, buf, 1, HAL_MAX_DELAY);
     if (buf[0] != 0xEA)
         return E_WRONG_WHOAMI;
