@@ -18,7 +18,7 @@ void log_init(UART_HandleTypeDef *huart, log_level_t level) {
 }
 
 void log_write(log_level_t level, const char *file, int line, const char *fmt, ...) {
-    if (level > logger.level) {
+    if (level < logger.level) {
         return;
     }
 
