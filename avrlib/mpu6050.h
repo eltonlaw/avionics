@@ -29,6 +29,7 @@
 #define MPU6050_REG_GYRO_CONFIG  0x1B
 #define MPU6050_REG_ACCEL_CONFIG 0x1C
 
+// Assumes AD0 = 0
 #define MPU6050_I2C_SLA 0x68
 // 7bit address + R/W bit
 #define MPU6050_I2C_SLA_W (MPU6050_I2C_SLA << 1 | TW_WRITE)

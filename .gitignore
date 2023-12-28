@@ -13,6 +13,8 @@
 **/*.kicad_prl
 **/*.zip
 **/*.*.lck
+**/_autosave-*.kicad_sch
+**/#auto_saved_files#
 
 **/build
 **/build_esp32*/
