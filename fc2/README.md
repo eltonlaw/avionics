@@ -12,5 +12,8 @@
 - MPU6050 AD0 (pin 9) pulled to ground so that i2c address is 1101000 (shifted format it would be 0xD0 for write and 0xD1 for read) [^1]
 - MPU6050 INT (pin 12) is an output pin to signal events. Since we're continuously polling, this is unused. [^1]
 - MPU6050 AUX_DA (pin 6) and AUX_CL (pin 7) are for an external magnetometer and are unused. [^1]
+- D1 LED for showing board is powered
+- 
 
 [^1]: https://invensense.tdk.com/wp-content/uploads/2015/02/MPU-6000-Datasheet1.pdf
+[^2]: https://www.st.com/resource/en/datasheet/stm32g070cb.pdf
