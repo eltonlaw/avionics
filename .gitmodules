@@ -16,3 +16,18 @@
 [submodule "physics_sim/glitter/vendor/glad"]
 	path = physics_sim/glitter/vendor/glad
 	url = git@github.com:Dav1dde/glad.git
+[submodule "physics_sim/vendor/glew"]
+	path = physics_sim/vendor/glew
+	url = https://github.com/nigels-com/glew.git
+[submodule "physics_sim/vendor/glfw"]
+	path = physics_sim/vendor/glfw
+	url = https://github.com/glfw/glfw.git
+[submodule "physics_sim/vendor/assimp"]
+	path = physics_sim/vendor/assimp
+	url = https://github.com/assimp/assimp.git
+[submodule "physics_sim/vendor/bullet3"]
+	path = physics_sim/vendor/bullet3
+	url = https://github.com/bulletphysics/bullet3.git
+[submodule "physics_sim/vendor/glm"]
+	path = physics_sim/vendor/glm
+	url = https://github.com/g-truc/glm.git

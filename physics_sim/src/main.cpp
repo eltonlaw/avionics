@@ -1,13 +1,15 @@
-// Local Headers
-#include "glitter.hpp"
-
 // System Headers
-#include <glad/glad.h>
+#define GLEW_STATIC
+#include <stdio.h>
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
 // Standard Headers
 #include <cstdio>
 #include <cstdlib>
+
+const int mWidth = 800;
+const int mHeight = 600;
 
 static void error_callback(int error, const char* description) {
     fprintf(stderr, "Error: %s\n", description);
@@ -42,13 +44,14 @@ int main(int argc, char * argv[]) {
 
     // Create Context and Load OpenGL Functions
     glfwMakeContextCurrent(window);
-    gladLoadGL();
+    glewExperimental = GL_TRUE;
+    glewInit();
     glfwSwapInterval(1);
     glfwSetKeyCallback(window, key_callback);
     fprintf(stdout, "OpenGL %s\n", glGetString(GL_VERSION));
 
     // Rendering Loop
-    while (glfwWindowShouldClose(window) == false) {
+    while (!glfwWindowShouldClose(window)) {
         // Background Fill Color
         glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -58,6 +61,9 @@ int main(int argc, char * argv[]) {
         // Check if any events are triggered and update windows state, calling
         // any corresponding callbacks and returns immediately
         glfwPollEvents();
+
+        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+            glfwSetWindowShouldClose(window, GL_TRUE);
     }
     glfwDestroyWindow(window);
     glfwTerminate();
