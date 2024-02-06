@@ -1,0 +1,5 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "fc1_symbols")(type "KiCad")(uri "${KIPRJMOD}/fc1_symbols.kicad_sym")(options "")(descr ""))
+  (lib (name "avionics")(type "KiCad")(uri "/home/d0nkrs/dev/avionics/kicad_sym/avionics.kicad_sym")(options "")(descr ""))
+)
