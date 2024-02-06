@@ -31,3 +31,12 @@
 [submodule "physics_sim/vendor/glm"]
 	path = physics_sim/vendor/glm
 	url = https://github.com/g-truc/glm.git
+[submodule "ext/stm32-cmake"]
+	path = ext/stm32-cmake
+	url = git@github.com:ObKo/stm32-cmake.git
+[submodule "ext/STM32CubeG0"]
+	path = ext/STM32CubeG0
+	url = https://github.com/STMicroelectronics/STM32CubeG0
+[submodule "ext/STM32CubeF1"]
+	path = ext/STM32CubeF1
+	url = git@github.com:STMicroelectronics/STM32CubeF1.git
