@@ -23,3 +23,9 @@ git clone https://github.com/espressif/esp-idf ${ESP_IDF_PATH}
 ${ESP_IDF_PATH}/install.sh esp32c3 --enable-pytest
 ${ESP_IDF_PATH}/tools/idf_tools.py install
 ```
+
+### STM32
+
+```
+sudo pacman -S arm-none-eabi-gcc arm-none-eabi-newlib
+```
