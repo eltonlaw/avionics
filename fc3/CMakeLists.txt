@@ -8,9 +8,10 @@ set(FAMILY "G0" CACHE STRING "Target STM32 family")
 set(PROJ_NAME fc3)
 set(TARGET_NAME ${PROJ_NAME}-${FAMILY})
 set(HAL_COMP_LIST
-    RCC
-    GPIO
     CORTEX
+    GPIO
+    PWR
+    RCC
     UART
     )
 set(CMSIS_COMP_LIST "")
@@ -45,11 +46,19 @@ find_package(CMSIS COMPONENTS "${CMSIS_COMP_LIST}" REQUIRED)
 # FIXME: add FC3_F1
 if(FC3_G0)
     # FIXME: put hal_conf into headerfile
-    add_executable(${TARGET_NAME} src/main.c src/stm32g0xx_hal_conf.h)
+    add_executable(${TARGET_NAME}
+        src/main.c
+        # src/system_stm32g0xx.c
+        # src/stm32g0xx_it.c
+        # src/stm32g0xx_it.h
+        src/stm32g0xx_hal_conf.h
+    )
     target_link_libraries(${TARGET_NAME}
-        HAL::STM32::G0::RCC
-        HAL::STM32::G0::GPIO
         HAL::STM32::G0::CORTEX
+        HAL::STM32::G0::GPIO
+        HAL::STM32::G0::PWR
+        HAL::STM32::G0::PWREx
+        HAL::STM32::G0::RCC
         HAL::STM32::G0::UART
         HAL::STM32::G0::UARTEx
         CMSIS::STM32::G070RB
