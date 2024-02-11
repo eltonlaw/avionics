@@ -1,3 +1,4 @@
+#include <string.h>
 #include "stm32g0xx_hal_conf.h"
 #if defined FC3_G0
   #include "stm32g0xx_hal.h"
@@ -37,6 +38,11 @@ static void MX_USART2_UART_Init(void) {
 int main(void) {
   HAL_Init();
   MX_USART2_UART_Init();
-  while (1) {} 
+
+  char buf[] = "hello world\n";
+  while(1) {
+    HAL_UART_Transmit(&huart2, (uint8_t *)buf, strlen(buf), HAL_MAX_DELAY);
+    HAL_Delay(1000);
+  }
   return 0;
 }
