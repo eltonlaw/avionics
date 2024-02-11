@@ -27,7 +27,7 @@ def start(baud=115200):
             )
             print(f"Attached to serial port {port}")
             break
-        except SerialException:
+        except serial.SerialException:
             continue
         except:
             break

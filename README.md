@@ -29,3 +29,5 @@ ${ESP_IDF_PATH}/tools/idf_tools.py install
 ```
 sudo pacman -S arm-none-eabi-gcc arm-none-eabi-newlib
 ```
+
+[Download STM32CubeProgrammer](https://www.st.com/en/development-tools/stm32cubeprog.html#get-software) and add to $PATH
