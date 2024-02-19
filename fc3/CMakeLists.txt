@@ -1,8 +1,12 @@
 cmake_minimum_required(VERSION 3.16)
 
+option(DEBUG "Enable debug symbols" ON)
+
 # create compile_commands.json for clangd
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "")
 
+set(LINKER_SCRIPT ${CMAKE_SOURCE_DIR}/STM32G070RBTX_FLASH.ld)
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -T${LINKER_SCRIPT}")
 set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/../ext/stm32-cmake/cmake/stm32_gcc.cmake)
 set(FAMILY "G0" CACHE STRING "Target STM32 family")
 set(PROJ_NAME fc3)
@@ -15,8 +19,6 @@ set(HAL_COMP_LIST
     UART
     )
 set(CMSIS_COMP_LIST "")
-
-add_definitions(-DFC3_${FAMILY})
 message(STATUS "Configuring for STM32${FAMILY} series")
 if(${FAMILY} STREQUAL "G0")
     set(FC3_G0 ON CACHE BOOL "Compile for G0" FORCE)
@@ -39,7 +41,6 @@ if(${FAMILY} STREQUAL "G0")
 else()
     set(FC3_G0 OFF CACHE BOOL "Compile for G0" FORCE)
 endif()
-
 if(${FAMILY} STREQUAL "F1")
     set(FC3_F1 ON CACHE BOOL "Compile for F1" FORCE)
 else()
@@ -47,6 +48,18 @@ else()
 endif()
 
 project(${PROJ_NAME} C ASM)
+
+if(DEBUG)
+    # If DEBUG is ON, add debug symbols and potentially lower optimization
+    add_compile_options(-g -O0)
+    add_definitions(-DDEBUG) # Define DEBUG preprocessor macro
+    message(STATUS "Debug mode is enabled")
+else()
+    # If DEBUG is OFF, optimize for release
+    add_compile_options(-O3)
+    message(STATUS "Debug mode is disabled, optimized build")
+endif()
+add_definitions(-DFC3_${FAMILY})
 
 list(APPEND CMSIS_COMP_LIST STM32${FAMILY})
 list(APPEND HAL_COMP_LIST STM32${FAMILY})
@@ -84,7 +97,6 @@ if(FC3_G0)
     stm32_print_size_of_target(${TARGET_NAME})
     stm32_generate_hex_file(${TARGET_NAME})
 endif()
-
 add_custom_target(flash
     COMMAND STM32_Programmer_CLI -c port=SWD -w ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_NAME}.hex -v -rst
     COMMENT "Flashing the board..."
