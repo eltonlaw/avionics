@@ -20,6 +20,22 @@ add_definitions(-DFC3_${FAMILY})
 message(STATUS "Configuring for STM32${FAMILY} series")
 if(${FAMILY} STREQUAL "G0")
     set(FC3_G0 ON CACHE BOOL "Compile for G0" FORCE)
+	add_compile_options(
+		-mcpu=cortex-m0plus # specify the target architecture
+		-std=gnu11 # specify the C standard
+		-g3 # generate debug information
+		-DDEBUG # define DEBUG macro
+		-DUSE_HAL_DRIVER # define USE_HAL_DRIVER macro
+		-DSTM32G070xx # specify the STM32 series
+		-O0 # optimization level
+		-ffunction-sections # place each function in its own section
+		-fdata-sections # place each data item in its own section
+		-Wall # enable all warnings
+		-fstack-usage # generate stack usage information
+        # -fcyclomatic-complexity # enable cyclomatic complexity
+		-mfloat-abi=soft # specify floating-point ABI
+		-mthumb # generate code for the Thumb instruction set
+	)
 else()
     set(FC3_G0 OFF CACHE BOOL "Compile for G0" FORCE)
 endif()
