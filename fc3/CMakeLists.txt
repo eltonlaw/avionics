@@ -5,9 +5,6 @@ option(DEBUG "Enable debug symbols" ON)
 # create compile_commands.json for clangd
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "")
 
-set(LINKER_SCRIPT ${CMAKE_SOURCE_DIR}/STM32G070RBTX_FLASH.ld)
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -T${LINKER_SCRIPT}")
-set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/../ext/stm32-cmake/cmake/stm32_gcc.cmake)
 set(FAMILY "G0" CACHE STRING "Target STM32 family")
 set(PROJ_NAME fc3)
 set(TARGET_NAME ${PROJ_NAME}-${FAMILY})
@@ -22,22 +19,6 @@ set(CMSIS_COMP_LIST "")
 message(STATUS "Configuring for STM32${FAMILY} series")
 if(${FAMILY} STREQUAL "G0")
     set(FC3_G0 ON CACHE BOOL "Compile for G0" FORCE)
-	add_compile_options(
-		-mcpu=cortex-m0plus # specify the target architecture
-		-std=gnu11 # specify the C standard
-		-g3 # generate debug information
-		-DDEBUG # define DEBUG macro
-		-DUSE_HAL_DRIVER # define USE_HAL_DRIVER macro
-		-DSTM32G070xx # specify the STM32 series
-		-O0 # optimization level
-		-ffunction-sections # place each function in its own section
-		-fdata-sections # place each data item in its own section
-		-Wall # enable all warnings
-		-fstack-usage # generate stack usage information
-        # -fcyclomatic-complexity # enable cyclomatic complexity
-		-mfloat-abi=soft # specify floating-point ABI
-		-mthumb # generate code for the Thumb instruction set
-	)
 else()
     set(FC3_G0 OFF CACHE BOOL "Compile for G0" FORCE)
 endif()
@@ -47,11 +28,33 @@ else()
     set(FC3_F1 OFF CACHE BOOL "Compile for F1" FORCE)
 endif()
 
+set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/../ext/stm32-cmake/cmake/stm32_gcc.cmake)
 project(${PROJ_NAME} C ASM)
+
+add_compile_options(
+    -std=gnu11 # specify the C standard
+    -Wall
+    -ffunction-sections # place each function in its own section
+    -fdata-sections # place each data item in its own section
+    -fstack-usage
+    -mfloat-abi=soft
+    -DUSE_HAL_DRIVER # define USE_HAL_DRIVER macro
+    # -fcyclomatic-complexity # enable cyclomatic complexity
+)
+if(${FAMILY} STREQUAL "G0")
+    set(FC3_G0 ON CACHE BOOL "Compile for G0" FORCE)
+    set(LINKER_SCRIPT ${CMAKE_SOURCE_DIR}/STM32G070RBTX_FLASH.ld)
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -T${LINKER_SCRIPT} --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--gc-sections -static -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group")
+	add_compile_options(
+		-mcpu=cortex-m0plus
+		-DSTM32G070xx
+        -mthumb
+	)
+endif()
 
 if(DEBUG)
     # If DEBUG is ON, add debug symbols and potentially lower optimization
-    add_compile_options(-g -O0)
+    add_compile_options(-g3 -O0)
     add_definitions(-DDEBUG) # Define DEBUG preprocessor macro
     message(STATUS "Debug mode is enabled")
 else()
@@ -78,8 +81,8 @@ if(FC3_G0)
     add_executable(${TARGET_NAME}
         src/main.c
         # src/system_stm32g0xx.c
-        # src/stm32g0xx_it.c
-        # src/stm32g0xx_it.h
+        src/stm32g0xx_it.c
+        src/stm32g0xx_it.h
         src/stm32g0xx_hal_conf.h
     )
     target_link_libraries(${TARGET_NAME}
