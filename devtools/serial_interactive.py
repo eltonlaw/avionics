@@ -11,7 +11,7 @@ DEV_FP = "/dev"
 def start(baud=115200):
     global ser
     ports = [
-        f"{DEV_FP}/{d}"
+         f"{DEV_FP}/{d}"
          for d in os.listdir(f"{DEV_FP}/")
          if d.startswith("ttyUSB") or d.startswith("ttyACM")
      ]
