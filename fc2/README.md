@@ -17,6 +17,9 @@
 - SAM-M10Q "The inrush current at startup can go up to 100 mA. Ensure that the external power supply is able to deliver up to 100 mA." [^3]
 - SAM-M10Q "All the inputs have internal pull-up resistors in normal operation and can be left open if not used." [^3]
 - SAM-M10Q V_IO and V_CC typical value is 3V with max of 3.6V and min of 2.7V
+- SAM-M10Q "The inrush current at startup can go up to 100 mA" [^3]
+- SAM-M10Q "all inputs have internal pull-up resisotrs in normal operation and can be left open if unused" [^3]
+- SAM-M10Q "not protected against overvoltage or reversed voltages." [^3]
 
 [^1]: https://invensense.tdk.com/wp-content/uploads/2015/02/MPU-6000-Datasheet1.pdf
 [^2]: https://www.st.com/resource/en/datasheet/stm32g070cb.pdf
