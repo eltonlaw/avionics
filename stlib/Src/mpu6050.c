@@ -13,13 +13,13 @@ error_t mpu6050_read(mpu6050_cfg_t* cfg, mpu6050_data_t *data) {
         return (error_t) status;
     }
 
-    data->accel_x = ((int16_t)(buf[0] << 8 | buf[1]) / cfg->accel_scaler) - cfg->offset.accel_x;
-    data->accel_y = ((int16_t)(buf[2] << 8 | buf[3]) / cfg->accel_scaler) - cfg->offset.accel_y;
-    data->accel_z = ((int16_t)(buf[4] << 8 | buf[5]) / 14418.0) - cfg->offset.accel_z;
+    data->accel_x = ((int16_t)(buf[0] << 8 | buf[1]) / cfg->accel_scaler) + cfg->offset.accel_x;
+    data->accel_y = ((int16_t)(buf[2] << 8 | buf[3]) / cfg->accel_scaler) + cfg->offset.accel_y;
+    data->accel_z = ((int16_t)(buf[4] << 8 | buf[5]) / 14418.0) + cfg->offset.accel_z;
     data->temperature = (double)((int16_t)(buf[6] << 8 | buf[7]) / (double) 340.0 + (double) 36.53);
-    data->gyro_x = ((int16_t)(buf[8] << 8 | buf[9]) / cfg->gyro_scaler) - cfg->offset.gyro_x;
-    data->gyro_y = ((int16_t)(buf[10] << 8 | buf[11]) / cfg->gyro_scaler) - cfg->offset.gyro_y;
-    data->gyro_z = ((int16_t)(buf[12] << 8 | buf[13]) / cfg->gyro_scaler) - cfg->offset.gyro_z;
+    data->gyro_x = ((int16_t)(buf[8] << 8 | buf[9]) / cfg->gyro_scaler) + cfg->offset.gyro_x;
+    data->gyro_y = ((int16_t)(buf[10] << 8 | buf[11]) / cfg->gyro_scaler) + cfg->offset.gyro_y;
+    data->gyro_z = ((int16_t)(buf[12] << 8 | buf[13]) / cfg->gyro_scaler) + cfg->offset.gyro_z;
 
     return E_OK;
 }
@@ -35,13 +35,13 @@ error_t mpu6050_calibrate(mpu6050_cfg_t* cfg) {
         if ((status = mpu6050_read(cfg, &data)) != E_OK) {
             return status;
         };
-        offset.accel_x = offset.accel_x + (data.accel_x - offset.accel_x) / i;
-        offset.accel_y = offset.accel_y + (data.accel_y - offset.accel_y) / i;
+        offset.accel_x = offset.accel_x - (data.accel_x - offset.accel_x) / i;
+        offset.accel_y = offset.accel_y - (data.accel_y - offset.accel_y) / i;
         // sensor should be positions such that it is facing away from earth
-        offset.accel_z = offset.accel_z + (data.accel_z - offset.accel_z - 1) / i;
-        offset.gyro_x = offset.gyro_x + (data.gyro_x - offset.gyro_x) / i;
-        offset.gyro_y = offset.gyro_y + (data.gyro_y - offset.gyro_y) / i;
-        offset.gyro_z = offset.gyro_z + (data.gyro_z - offset.gyro_z) / i;
+        offset.accel_z = offset.accel_z - (data.accel_z - offset.accel_z - 1) / i;
+        offset.gyro_x = offset.gyro_x - (data.gyro_x - offset.gyro_x) / i;
+        offset.gyro_y = offset.gyro_y - (data.gyro_y - offset.gyro_y) / i;
+        offset.gyro_z = offset.gyro_z - (data.gyro_z - offset.gyro_z) / i;
     }
     cfg->offset = offset;
     return E_OK;
