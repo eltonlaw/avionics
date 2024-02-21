@@ -40,3 +40,6 @@
 [submodule "ext/STM32CubeF1"]
 	path = ext/STM32CubeF1
 	url = git@github.com:STMicroelectronics/STM32CubeF1.git
+[submodule "ext/yocto/poky"]
+	path = ext/yocto/poky
+	url = git@github.com:yoctoproject/poky.git
