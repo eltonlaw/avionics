@@ -47,31 +47,30 @@ error_t mpu6050_calibrate(mpu6050_cfg_t* cfg) {
     return E_OK;
 }
 
-error_t mpu6050_init(mpu6050_cfg_t* cfg, I2C_HandleTypeDef* i2cx) {
+error_t mpu6050_init(mpu6050_cfg_t* cfg) {
     uint8_t buf;
     error_t status;
 
-    cfg->i2cx = i2cx;
     cfg->offset = (mpu6050_data_t) {0, 0, 0, 0, 0, 0, 0};
 
     /* FIXME: hardcode ranges for now to most sensitive */
     mpu6050_gyro_range_t gyro_range = MPU6050_GYRO_RANGE_250;
     mpu6050_accel_range_t accel_range = MPU6050_ACCEL_RANGE_2;
 
-    HAL_I2C_Mem_Read(i2cx, MPU6050_ADDR, MPU6050_WHO_AM_I_REG, 1, &buf, 1, HAL_MAX_DELAY);
+    HAL_I2C_Mem_Read(cfg->i2cx, MPU6050_ADDR, MPU6050_WHO_AM_I_REG, 1, &buf, 1, HAL_MAX_DELAY);
     if (0x68 != buf) {
         return E_I2C_WRONG_DEVICE;
     }
 
     buf = MPU6050_PWR_MGMT_OFF;
-    status = (error_t) HAL_I2C_Mem_Write(i2cx, MPU6050_ADDR, MPU6050_PWR_MGMT_1_REG, 1, &buf, 1, HAL_MAX_DELAY);
+    status = (error_t) HAL_I2C_Mem_Write(cfg->i2cx, MPU6050_ADDR, MPU6050_PWR_MGMT_1_REG, 1, &buf, 1, HAL_MAX_DELAY);
     if (status != E_HAL_OK) {
         return status;
     }
 
     // Set gyro config
     buf = (((1 << 2) - 1) & gyro_range) << 3;
-    status = (error_t) HAL_I2C_Mem_Write(i2cx, MPU6050_ADDR, MPU6050_GYRO_CONFIG_REG, 1, &buf, 1, HAL_MAX_DELAY);
+    status = (error_t) HAL_I2C_Mem_Write(cfg->i2cx, MPU6050_ADDR, MPU6050_GYRO_CONFIG_REG, 1, &buf, 1, HAL_MAX_DELAY);
     if (status != E_HAL_OK) {
         return status;
     }
@@ -92,7 +91,7 @@ error_t mpu6050_init(mpu6050_cfg_t* cfg, I2C_HandleTypeDef* i2cx) {
 
     // Set accel config
     buf = (((1 << 2) - 1) & accel_range) << 3;
-    status = HAL_I2C_Mem_Write(i2cx, MPU6050_ADDR, MPU6050_ACCEL_CONFIG_REG, 1, &buf, 1, HAL_MAX_DELAY);
+    status = HAL_I2C_Mem_Write(cfg->i2cx, MPU6050_ADDR, MPU6050_ACCEL_CONFIG_REG, 1, &buf, 1, HAL_MAX_DELAY);
     if (status != E_HAL_OK) {
         return (error_t) status;
     }
