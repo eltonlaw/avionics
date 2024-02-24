@@ -118,10 +118,16 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  HAL_TIM_Base_Start(&htim3);
+  __HAL_TIM_SET_COUNTER(&htim3, 0);
   while (1)
   {
     mpu6050_read(&mpu6050_cfg, &mpu6050_data);
-    log_info("Accel(X:%lfG, Y:%lfG, Z:%lfG), Temp:%lf, Gyro(X:%lf, Y:%lf, Z:%lf)\r\n",
+    uint32_t elapsed_time = __HAL_TIM_GET_COUNTER(&htim3);
+    __HAL_TIM_SET_COUNTER(&htim3, 0);
+
+    log_info("%lu Ax=%lf Ay=%lfG Az=%lfG T=%lf Gx=%lf Gy=%lf Gz=%lf\n",
+        elapsed_time,
         mpu6050_data.accel_x, mpu6050_data.accel_y, mpu6050_data.accel_z,
         mpu6050_data.temperature,
         mpu6050_data.gyro_x, mpu6050_data.gyro_y, mpu6050_data.gyro_z);
@@ -237,9 +243,11 @@ static void MX_TIM3_Init(void)
 
   /* USER CODE BEGIN TIM3_Init 1 */
 
+
+  /* Prescale by 16000 because internal clock is 16MHz and we want 1KHz for millisecond accuracy */
   /* USER CODE END TIM3_Init 1 */
   htim3.Instance = TIM3;
-  htim3.Init.Prescaler = 0;
+  htim3.Init.Prescaler = 16000;
   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim3.Init.Period = 65535;
   htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
