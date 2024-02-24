@@ -101,6 +101,11 @@ int main(void)
   MX_I2C1_Init();
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
+  for (int i = 0; i < 10; i++) {
+    HAL_Delay(200);
+    HAL_GPIO_TogglePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin);
+  }
+
   log_init(&huart2, LOG_LEVEL_INFO);
   mpu6050_cfg.i2cx = &hi2c1;
   mpu6050_cfg.timx = &htim3;
