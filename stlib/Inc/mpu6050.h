@@ -43,10 +43,18 @@ typedef struct {
 typedef struct {
     double accel_scaler;
     double gyro_scaler;
+    mpu6050_accel_range_t accel_range;
+    mpu6050_gyro_range_t gyro_range;
     I2C_HandleTypeDef* i2cx;
     TIM_HandleTypeDef* timx;
     mpu6050_data_t offset;
+    bool whoami_checked;
+    bool pwr_mgmt_off;
+    bool gyro_range_set;
+    bool accel_range_set;
+    bool offsets_set;
 } mpu6050_cfg_t;
 
+error_t mpu6050_init_w_retry(mpu6050_cfg_t* cfg, uint8_t max_retries);
 error_t mpu6050_init(mpu6050_cfg_t* cfg);
 error_t mpu6050_read(mpu6050_cfg_t* cfg, mpu6050_data_t *data);

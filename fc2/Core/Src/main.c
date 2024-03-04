@@ -77,6 +77,7 @@ int main(void)
   /* USER CODE BEGIN 1 */
   mpu6050_cfg_t mpu6050_cfg;
   mpu6050_data_t mpu6050_data;
+  error_t err;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -101,37 +102,47 @@ int main(void)
   MX_I2C1_Init();
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
+  HAL_TIM_Base_Start(&htim3);
+  __HAL_TIM_SET_COUNTER(&htim3, 0);
+
   for (int i = 0; i < 10; i++) {
     HAL_Delay(200);
     HAL_GPIO_TogglePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin);
   }
 
   log_init(&huart2, LOG_LEVEL_INFO);
+  log_info("Logging initialized\n");
+
   mpu6050_cfg.i2cx = &hi2c1;
   mpu6050_cfg.timx = &htim3;
-  mpu6050_init(&mpu6050_cfg);
-  log_info("Initialized MPU6050 accel_scaler=%lf, gyro_scaler=%lf, accel_offset=(x:%lf, y:%lf, z:%lf), gyro_offset=(x:%lf, y:%lf, z:%lf)",
-      mpu6050_cfg.accel_scaler,
-      mpu6050_cfg.gyro_scaler,
-      mpu6050_cfg.offset.accel_x,
-      mpu6050_cfg.offset.accel_y,
-      mpu6050_cfg.offset.accel_z,
-      mpu6050_cfg.offset.gyro_x,
-      mpu6050_cfg.offset.gyro_y,
-      mpu6050_cfg.offset.gyro_z);
+  mpu6050_cfg.gyro_range = MPU6050_GYRO_RANGE_250;
+  mpu6050_cfg.accel_range = MPU6050_ACCEL_RANGE_2;
+  if (E_OK == (err = mpu6050_init_w_retry(&mpu6050_cfg, 4))) {
+      log_info("Initialized MPU6050 accel_scaler=%lf, gyro_scaler=%lf, accel_offset=(x:%lf, y:%lf, z:%lf), gyro_offset=(x:%lf, y:%lf, z:%lf)\n",
+          mpu6050_cfg.accel_scaler,
+          mpu6050_cfg.gyro_scaler,
+          mpu6050_cfg.offset.accel_x,
+          mpu6050_cfg.offset.accel_y,
+          mpu6050_cfg.offset.accel_z,
+          mpu6050_cfg.offset.gyro_x,
+          mpu6050_cfg.offset.gyro_y,
+          mpu6050_cfg.offset.gyro_z);
+  } else {
+      panic("Failed to initialize MPU6050: %d\n", err);
+  }
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  HAL_TIM_Base_Start(&htim3);
-  __HAL_TIM_SET_COUNTER(&htim3, 0);
+  log_info("Initialization complete, starting main loop\n");
+  HAL_Delay(3000);
   while (1)
   {
     mpu6050_read(&mpu6050_cfg, &mpu6050_data);
     uint32_t elapsed_time = __HAL_TIM_GET_COUNTER(&htim3);
     __HAL_TIM_SET_COUNTER(&htim3, 0);
 
-    log_info("%lu Ax=%lf Ay=%lfG Az=%lfG T=%lf Gx=%lf Gy=%lf Gz=%lf\n",
+    log_info("T=%lu Ax=%lf Ay=%lfG Az=%lfG T=%lf Gx=%lf Gy=%lf Gz=%lf\n",
         elapsed_time,
         mpu6050_data.accel_x, mpu6050_data.accel_y, mpu6050_data.accel_z,
         mpu6050_data.temperature,
