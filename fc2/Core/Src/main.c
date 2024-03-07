@@ -76,7 +76,8 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
   mpu6050_cfg_t mpu6050_cfg;
-  mpu6050_data_t mpu6050_data;
+  imu_data_t imu_data;
+  state_t state = {0, 0, 0};
   error_t err;
   /* USER CODE END 1 */
 
@@ -136,17 +137,20 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   log_info("Initialization complete, starting main loop\n");
   HAL_Delay(3000);
+  __HAL_TIM_SET_COUNTER(&htim3, 0);
   while (1)
   {
-    mpu6050_read(&mpu6050_cfg, &mpu6050_data);
-    uint32_t elapsed_time = __HAL_TIM_GET_COUNTER(&htim3);
+    mpu6050_read(&mpu6050_cfg, &imu_data);
+    double delta_ticks = __HAL_TIM_GET_COUNTER(&htim3);
     __HAL_TIM_SET_COUNTER(&htim3, 0);
+    update_state(&state, &imu_data, delta_ticks);
 
-    log_info("T=%lu Ax=%lf Ay=%lfG Az=%lfG T=%lf Gx=%lf Gy=%lf Gz=%lf\n",
-        elapsed_time,
-        mpu6050_data.accel_x, mpu6050_data.accel_y, mpu6050_data.accel_z,
-        mpu6050_data.temperature,
-        mpu6050_data.gyro_x, mpu6050_data.gyro_y, mpu6050_data.gyro_z);
+    log_info("T=%lf Ax=%lf Ay=%lfG Az=%lfG TEMP=%lf Gx=%lf Gy=%lf Gz=%lf Tx=%lf Ty=%lf Tz=%lf\n",
+        delta_ticks,
+        imu_data.accel_x, imu_data.accel_y, imu_data.accel_z,
+        imu_data.temperature,
+        imu_data.gyro_x, imu_data.gyro_y, imu_data.gyro_z,
+        state.angle_x, state.angle_y, state.angle_z);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

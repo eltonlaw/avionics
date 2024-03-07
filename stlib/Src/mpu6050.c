@@ -1,7 +1,7 @@
 #include "mpu6050.h"
 
 /* Read data registers on MPU6050 with i2c bus */
-error_t mpu6050_read(mpu6050_cfg_t* cfg, mpu6050_data_t *data) {
+error_t mpu6050_read(mpu6050_cfg_t* cfg, imu_data_t *data) {
     uint8_t buf[14];
     HAL_StatusTypeDef status;
 
@@ -27,8 +27,8 @@ error_t mpu6050_calibrate(mpu6050_cfg_t* cfg) {
     // incrementally calculate average readings of offsets
     error_t status;
     uint8_t num_failed = 0;
-    mpu6050_data_t data;
-    mpu6050_data_t offset = {0, 0, 0, 0, 0, 0, 0};
+    imu_data_t data;
+    imu_data_t offset = {0, 0, 0, 0, 0, 0, 0};
     for (int i = 1; i < 700; i++) {
         if ((status = mpu6050_read(cfg, &data)) != E_OK) {
             num_failed++;
@@ -121,7 +121,7 @@ error_t mpu6050_init(mpu6050_cfg_t* cfg) {
     }
 
     if (!cfg->offsets_set) {
-        cfg->offset = (mpu6050_data_t) {0, 0, 0, 0, 0, 0, 0};
+        cfg->offset = (imu_data_t) {0, 0, 0, 0, 0, 0, 0};
         if ((status = mpu6050_calibrate(cfg)) != E_OK) {
             return status;
         }
