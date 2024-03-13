@@ -75,6 +75,7 @@ message(STATUS "STM32_CMAKE_DIR is set to ${STM32_CMAKE_DIR}")
 message(STATUS "CMAKE_MODULE_PATH is set to ${CMAKE_MODULE_PATH}")
 find_package(HAL COMPONENTS "${HAL_COMP_LIST}" REQUIRED)
 find_package(CMSIS COMPONENTS "${CMSIS_COMP_LIST}" REQUIRED)
+file(GLOB STLIB_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/stlib/Src/*.c")
 
 # FIXME: add FC3_F1
 if(FC3_G0)
@@ -85,6 +86,7 @@ if(FC3_G0)
         src/stm32g0xx_it.c
         src/stm32g0xx_it.h
         src/stm32g0xx_hal_conf.h
+        ${STLIB_SOURCES}
     )
     target_link_libraries(${TARGET_NAME}
         HAL::STM32::G0::CORTEX
@@ -99,7 +101,9 @@ if(FC3_G0)
         CMSIS::STM32::G070RB
         STM32::NoSys
     )
-	target_include_directories(${TARGET_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+	target_include_directories(${TARGET_NAME} PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/../stlib/Inc)
     stm32_print_size_of_target(${TARGET_NAME})
     stm32_generate_hex_file(${TARGET_NAME})
 endif()
