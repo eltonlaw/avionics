@@ -10,6 +10,7 @@ enum error_t {
     E_OK,
     E_I2C_WRONG_DEVICE,
     E_WRONG_WHOAMI,
+    E_INVALID_VALUE,
     // Catch all, discouraged
     E_UNKNOWN,
 };
