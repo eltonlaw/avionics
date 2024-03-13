@@ -13,6 +13,7 @@ set(HAL_COMP_LIST
     GPIO
     PWR
     RCC
+    TIM
     UART
     )
 set(CMSIS_COMP_LIST "")
@@ -91,6 +92,8 @@ if(FC3_G0)
         HAL::STM32::G0::PWR
         HAL::STM32::G0::PWREx
         HAL::STM32::G0::RCC
+        HAL::STM32::G0::TIM
+        HAL::STM32::G0::TIMEx
         HAL::STM32::G0::UART
         HAL::STM32::G0::UARTEx
         CMSIS::STM32::G070RB
