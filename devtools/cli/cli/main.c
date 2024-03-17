@@ -1,10 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <unistd.h>
 
 typedef void (*command_fn)(int, char**);
 
@@ -33,6 +30,13 @@ void handle_physics_sim(int argc, char **argv) {
     system("cd ./physics_sim/build && cmake ../ && make && ./sim");
 }
 
+void gen_compile_commands(int argc, char **argv) {
+    system("cmake -Bfc3/build fc3");
+    if (access("compile_commands.json", R_OK) != 0) {
+        system("ln -s fc3/build/compile_commands.json .");
+    }
+}
+
 int main(int argc, char *argv[]) {
     if (argc < 2) {
         printf("Usage: %s <command>\n", argv[0]);
@@ -40,10 +44,11 @@ int main(int argc, char *argv[]) {
     }
 
     command commands[] = {
-        {"serial", handle_serial},
         {"avr-gcc", handle_avr_gcc},
         {"fc1", handle_fc1},
+        {"gen-compile-commands", gen_compile_commands},
         {"sensor-calibrate", handle_sensor_calibrate},
+        {"serial", handle_serial},
         {"sim", handle_physics_sim},
         {NULL, NULL}  // Sentinel value to mark the end of the array
     };
