@@ -32,6 +32,17 @@ sudo pacman -S arm-none-eabi-gcc arm-none-eabi-newlib
 
 [Download STM32CubeProgrammer](https://www.st.com/en/development-tools/stm32cubeprog.html#get-software) and add to \$PATH
 
+## Flash with OpenOCD
+
+```
+# Start server
+$ openocd -f ext/openocd/tc/board/st_nucleo_g0.cfg
+# In separate terminal, connect to openocd server
+$ telnet localhost 4444
+> reset halt
+> flash write_image erase ./fc3/build/fc3-G0.hex
+> reset run
+```
 ## Yocto
 
 ```
