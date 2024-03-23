@@ -25,16 +25,16 @@ error_t mpu6050_read(mpu6050_cfg_t* cfg, imu_data_t *data) {
 error_t mpu6050_calibrate(mpu6050_cfg_t* cfg) {
     // FIXME: detect if it's moving where possible
     // incrementally calculate average readings of offsets
-    error_t status;
+    error_t err;
     uint8_t num_failed = 0;
     imu_data_t data;
     imu_data_t offset = {0, 0, 0, 0, 0, 0, 0};
     for (int i = 1; i < 700; i++) {
-        if ((status = mpu6050_read(cfg, &data)) != E_OK) {
+        if ((err = mpu6050_read(cfg, &data)) != E_OK) {
             num_failed++;
             if (num_failed > 70) {
                 log_error("MPU6050 >10\% of 700 reads failed at step %d\n", i);
-                return status;
+                return err;
             }
         };
         offset.accel_x = offset.accel_x + (data.accel_x - offset.accel_x) / i;
@@ -51,7 +51,7 @@ error_t mpu6050_calibrate(mpu6050_cfg_t* cfg) {
 
 error_t mpu6050_init(mpu6050_cfg_t* cfg) {
     uint8_t buf;
-    error_t status;
+    error_t err;
 
     if (!cfg->whoami_checked) {
         HAL_I2C_Mem_Read(cfg->i2cx, MPU6050_ADDR, MPU6050_WHO_AM_I_REG, 1, &buf, 1, HAL_MAX_DELAY);
@@ -64,10 +64,10 @@ error_t mpu6050_init(mpu6050_cfg_t* cfg) {
 
     if (!cfg->pwr_mgmt_off) {
         buf = MPU6050_PWR_MGMT_OFF;
-        status = (error_t) HAL_I2C_Mem_Write(cfg->i2cx, MPU6050_ADDR, MPU6050_PWR_MGMT_1_REG, 1, &buf, 1, HAL_MAX_DELAY);
-        if (status != E_HAL_OK) {
+        err = (error_t) HAL_I2C_Mem_Write(cfg->i2cx, MPU6050_ADDR, MPU6050_PWR_MGMT_1_REG, 1, &buf, 1, HAL_MAX_DELAY);
+        if (err != E_HAL_OK) {
             log_error("MPU6050: Failed to turn off sleep mode\n");
-            return status;
+            return err;
         }
         cfg->pwr_mgmt_off = true;
     }
