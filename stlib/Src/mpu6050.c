@@ -75,9 +75,9 @@ error_t mpu6050_init(mpu6050_cfg_t* cfg) {
     // Set gyro config
     if (!cfg->gyro_range_set) {
         buf = (((1 << 2) - 1) & cfg->gyro_range) << 3;
-        status = (error_t) HAL_I2C_Mem_Write(cfg->i2cx, MPU6050_ADDR, MPU6050_GYRO_CONFIG_REG, 1, &buf, 1, HAL_MAX_DELAY);
-        if (status != E_HAL_OK) {
-            return status;
+        err = (error_t) HAL_I2C_Mem_Write(cfg->i2cx, MPU6050_ADDR, MPU6050_GYRO_CONFIG_REG, 1, &buf, 1, HAL_MAX_DELAY);
+        if (err != E_HAL_OK) {
+            return err;
         }
         switch(cfg->gyro_range) {
             case MPU6050_GYRO_RANGE_250:
@@ -99,9 +99,9 @@ error_t mpu6050_init(mpu6050_cfg_t* cfg) {
     // Set accel config
     if (!cfg->accel_range_set) {
         buf = (((1 << 2) - 1) & cfg->accel_range) << 3;
-        status = HAL_I2C_Mem_Write(cfg->i2cx, MPU6050_ADDR, MPU6050_ACCEL_CONFIG_REG, 1, &buf, 1, HAL_MAX_DELAY);
-        if (status != E_HAL_OK) {
-            return (error_t) status;
+        err = (error_t) HAL_I2C_Mem_Write(cfg->i2cx, MPU6050_ADDR, MPU6050_ACCEL_CONFIG_REG, 1, &buf, 1, HAL_MAX_DELAY);
+        if (err != E_HAL_OK) {
+            return err;
         }
         switch(cfg->accel_range) {
             case MPU6050_ACCEL_RANGE_2:
@@ -122,8 +122,8 @@ error_t mpu6050_init(mpu6050_cfg_t* cfg) {
 
     if (!cfg->offsets_set) {
         cfg->offset = (imu_data_t) {0, 0, 0, 0, 0, 0, 0};
-        if ((status = mpu6050_calibrate(cfg)) != E_OK) {
-            return status;
+        if ((err = mpu6050_calibrate(cfg)) != E_OK) {
+            return err;
         }
         cfg->offsets_set = true;
     }

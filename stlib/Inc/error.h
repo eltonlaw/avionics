@@ -19,6 +19,8 @@ const char* error_name(error_t err);
 
 // FIXME: Add dump of relevant registers
 #define panic(...) do { \
-	log_fatal(__VA_ARGS__); \
-	while(1); \
+    log_fatal(__VA_ARGS__); \
+    log_info("Restarting in 30 seconds\n"); \
+    HAL_Delay(30000); \
+    NVIC_SystemReset(); \
 } while(0)
