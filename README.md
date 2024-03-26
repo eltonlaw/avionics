@@ -1,4 +1,4 @@
-# robotics
+# quadcopter
 
     ├── avrlib: Shared utils
     ├── devtools: miscellaneous local dev stuff
