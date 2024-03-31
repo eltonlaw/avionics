@@ -12,42 +12,72 @@ try:
 except:
     thread = None
 
-DEV_FP = "/dev"
+DEVICE_FP = "/dev"
 
-def start(
-    port=None,
-    baudrate=921600,
-    bytesize=serial.EIGHTBITS,
-    timeout=5,
-    stopbits=serial.STOPBITS_ONE
-):
-    global ser
-    ports = [
-         f"{DEV_FP}/{d}"
-         for d in os.listdir(f"{DEV_FP}/")
-         if d.startswith("ttyUSB") or d.startswith("ttyACM")
-     ]
-    if port is None:
-        print(f"Found ports: {ports}")
-        for port in ports:
-            try:
-                ser = serial.Serial(port=port, baudrate=baudrate, bytesize=bytesize, timeout=timeout, stopbits=stopbits)
-                print(f"Attached to serial port {port}")
-                break
-            except serial.SerialException:
-                continue
-            except:
-                break
-        return ser
-    else:
-        ser = serial.Serial(port=port, baudrate=baudrate, bytesize=bytesize, timeout=timeout, stopbits=stopbits)
-        return ser
+device_profiles = {
+    "stlink-stm32g070rb": {
+        'devices': ["ttyACM"],
+        'baudrate': 921600,
+        'bytesize': serial.EIGHTBITS,
+        'timeout': 5,
+        'stopbits': serial.STOPBITS_ONE,
+    },
+    "ft232_sam-m10q": {
+        'devices': ["ttyUSB"],
+        'baudrate': 9600,
+        'bytesize': serial.EIGHTBITS,
+        'timeout': 5,
+        'stopbits': serial.STOPBITS_ONE,
+    }
+}
 
 def stop():
     global ser
     ser.close()
     ser = None
     return
+
+def start(profile=None):
+    global ser
+    if ser is not None:
+        print("WARN: Serial already initialized, closing previous serial connection first")
+        stop()
+    if profile is None:
+        for i, profile_name in enumerate(device_profiles.keys()):
+            print(f"{i}: {profile_name}")
+        user_input = input("Enter index (default=0): ")
+        if user_input == "":
+            index = 0
+        else:
+            index = int(user_input)
+        profile = list(device_profiles.keys())[index]
+    print(f"Device Profile: {profile}")
+    conn_args = device_profiles[profile].copy()
+    devices_requested = conn_args.pop("devices")
+    ports_matched = [
+         f"{DEVICE_FP}/{d_found}"
+        for d_found in os.listdir(f"{DEVICE_FP}/")
+        if any(d_found.startswith(d_req) for d_req in devices_requested)
+    ]
+    if len(ports_matched) == 0:
+        print("ERROR: No ports found")
+        return
+
+    print(f"Found ports: {ports_matched}")
+    for port in ports_matched:
+        try:
+            conn_args["port"] = port
+            print(conn_args)
+            ser = serial.Serial(**conn_args)
+            print(f"Attached to serial port {port}")
+            break
+        except serial.SerialException:
+            continue
+        except:
+            break
+    if ser is None:
+        print("ERROR: Couldn't find a port to connect to")
+    return ser
 
 def w(b):
     ser.write(b)
