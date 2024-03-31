@@ -6,6 +6,8 @@
 **/list_job_1.txt
 **/size_info.txt
 **/__pycache__/
+# Dev
+compile_commands.json
 # Kicad
 **/*.bak
 **/fp-info-cache
