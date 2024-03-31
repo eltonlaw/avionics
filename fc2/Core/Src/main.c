@@ -145,7 +145,7 @@ int main(void)
     __HAL_TIM_SET_COUNTER(&htim3, 0);
     update_state(&state, &imu_data, delta_ticks);
 
-    log_info("T=%lf Ax=%lf Ay=%lfG Az=%lfG TEMP=%lf Gx=%lf Gy=%lf Gz=%lf Tx=%lf Ty=%lf Tz=%lf\n",
+    log_info("Ax=%lf Ay=%lfG Az=%lfG TEMP=%lf Gx=%lf Gy=%lf Gz=%lf Tx=%lf Ty=%lf Tz=%lf\n T=%lf",
         delta_ticks,
         imu_data.accel_x, imu_data.accel_y, imu_data.accel_z,
         imu_data.temperature,
@@ -309,7 +309,7 @@ static void MX_USART2_UART_Init(void)
 
   /* USER CODE END USART2_Init 1 */
   huart2.Instance = USART2;
-  huart2.Init.BaudRate = 115200;
+  huart2.Init.BaudRate = 921600;
   huart2.Init.WordLength = UART_WORDLENGTH_8B;
   huart2.Init.StopBits = UART_STOPBITS_1;
   huart2.Init.Parity = UART_PARITY_NONE;
