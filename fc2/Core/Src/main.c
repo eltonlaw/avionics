@@ -25,6 +25,7 @@
 #include <stdio.h>
 #include "log.h"
 #include "mpu6050.h"
+#include "sam_m10q.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -82,6 +83,8 @@ int main(void)
   imu_data_t imu_data;
   state_t state = {0, 0, 0};
   error_t err;
+  sam_m10q_cfg_t sam_m10q_cfg;
+  sam_m10q_data_t sam_m10q_data;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -135,6 +138,9 @@ int main(void)
   } else {
       panic("Failed to initialize MPU6050: %d\n", err);
   }
+
+  sam_m10q_cfg.uartx = &huart3;
+  sam_m10q_init(&sam_m10q_cfg);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -146,6 +152,7 @@ int main(void)
   {
     mpu6050_read(&mpu6050_cfg, &imu_data);
     double delta_ticks = __HAL_TIM_GET_COUNTER(&htim3);
+    // ubx_mon_ver();
     __HAL_TIM_SET_COUNTER(&htim3, 0);
     update_state(&state, &imu_data, delta_ticks);
 
@@ -155,6 +162,7 @@ int main(void)
         imu_data.temperature,
         imu_data.gyro_x, imu_data.gyro_y, imu_data.gyro_z,
         state.angle_x, state.angle_y, state.angle_z);
+    sam_m10q_read(&sam_m10q_cfg, &sam_m10q_data);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
