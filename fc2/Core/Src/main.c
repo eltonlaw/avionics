@@ -25,6 +25,7 @@
 #include <stdio.h>
 #include "log.h"
 #include "mpu6050.h"
+#include "sam_m10q.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -48,6 +49,7 @@ I2C_HandleTypeDef hi2c1;
 TIM_HandleTypeDef htim3;
 
 UART_HandleTypeDef huart2;
+UART_HandleTypeDef huart3;
 
 /* USER CODE BEGIN PV */
 
@@ -59,6 +61,7 @@ static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_TIM3_Init(void);
+static void MX_USART3_UART_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -74,11 +77,14 @@ static void MX_TIM3_Init(void);
   */
 int main(void)
 {
+
   /* USER CODE BEGIN 1 */
   mpu6050_cfg_t mpu6050_cfg;
   imu_data_t imu_data;
   state_t state = {0, 0, 0};
   error_t err;
+  sam_m10q_cfg_t sam_m10q_cfg;
+  sam_m10q_data_t sam_m10q_data;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -102,6 +108,7 @@ int main(void)
   MX_USART2_UART_Init();
   MX_I2C1_Init();
   MX_TIM3_Init();
+  MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start(&htim3);
   __HAL_TIM_SET_COUNTER(&htim3, 0);
@@ -131,6 +138,9 @@ int main(void)
   } else {
       panic("Failed to initialize MPU6050: %d\n", err);
   }
+
+  sam_m10q_cfg.uartx = &huart3;
+  sam_m10q_init(&sam_m10q_cfg);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -142,6 +152,7 @@ int main(void)
   {
     mpu6050_read(&mpu6050_cfg, &imu_data);
     double delta_ticks = __HAL_TIM_GET_COUNTER(&htim3);
+    // ubx_mon_ver();
     __HAL_TIM_SET_COUNTER(&htim3, 0);
     update_state(&state, &imu_data, delta_ticks);
 
@@ -151,6 +162,7 @@ int main(void)
         imu_data.temperature,
         imu_data.gyro_x, imu_data.gyro_y, imu_data.gyro_z,
         state.angle_x, state.angle_y, state.angle_z);
+    sam_m10q_read(&sam_m10q_cfg, &sam_m10q_data);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -338,6 +350,42 @@ static void MX_USART2_UART_Init(void)
   /* USER CODE BEGIN USART2_Init 2 */
 
   /* USER CODE END USART2_Init 2 */
+
+}
+
+/**
+  * @brief USART3 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_USART3_UART_Init(void)
+{
+
+  /* USER CODE BEGIN USART3_Init 0 */
+
+  /* USER CODE END USART3_Init 0 */
+
+  /* USER CODE BEGIN USART3_Init 1 */
+
+  /* USER CODE END USART3_Init 1 */
+  huart3.Instance = USART3;
+  huart3.Init.BaudRate = 9600;
+  huart3.Init.WordLength = UART_WORDLENGTH_8B;
+  huart3.Init.StopBits = UART_STOPBITS_1;
+  huart3.Init.Parity = UART_PARITY_NONE;
+  huart3.Init.Mode = UART_MODE_TX_RX;
+  huart3.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart3.Init.OverSampling = UART_OVERSAMPLING_16;
+  huart3.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+  huart3.Init.ClockPrescaler = UART_PRESCALER_DIV1;
+  huart3.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+  if (HAL_UART_Init(&huart3) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN USART3_Init 2 */
+
+  /* USER CODE END USART3_Init 2 */
 
 }
 
