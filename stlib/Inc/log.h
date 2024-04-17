@@ -29,6 +29,8 @@ extern logger_t logger;
 // Define the log functions
 void log_init(UART_HandleTypeDef *huart, log_level_t level);
 void log_write(log_level_t level, const char *file, int line, const char *fmt, ...);
+void event_imu_read(float ax, float ay, float az, float gx, float gy, float gz);
+void event_gps_read(double latitude, double longitude, float altitude);
 #define log_debug(...) log_write(LOG_LEVEL_DEBUG, __FILE__, __LINE__, __VA_ARGS__)
 #define log_info(...) log_write(LOG_LEVEL_INFO, __FILE__, __LINE__, __VA_ARGS__)
 #define log_warn(...) log_write(LOG_LEVEL_WARN, __FILE__, __LINE__, __VA_ARGS__)

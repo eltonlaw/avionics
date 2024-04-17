@@ -155,12 +155,8 @@ int main(void)
     __HAL_TIM_SET_COUNTER(&htim3, 0);
     update_state(&state, &imu_data, delta_ticks);
 
-    log_info("Ax=%lf Ay=%lfG Az=%lfG TEMP=%lf Gx=%lf Gy=%lf Gz=%lf Tx=%lf Ty=%lf Tz=%lf T=%lf\n",
-        imu_data.accel_x, imu_data.accel_y, imu_data.accel_z,
-        imu_data.temperature,
-        imu_data.gyro_x, imu_data.gyro_y, imu_data.gyro_z,
-        state.angle_x, state.angle_y, state.angle_z,
-        delta_ticks);
+    event_imu_read(imu_data.accel_x, imu_data.accel_y, imu_data.accel_z,
+            imu_data.gyro_x, imu_data.gyro_y, imu_data.gyro_z);
     // sam_m10q_read(&sam_m10q_cfg, &sam_m10q_data);
     /* USER CODE END WHILE */
 

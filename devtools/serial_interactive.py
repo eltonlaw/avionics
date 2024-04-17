@@ -1,11 +1,12 @@
 import os
 import serial
+import sys
 import threading
 
 try:
-    ser
+    state
 except:
-    ser = None
+    state = {}
 
 try:
     thread
@@ -33,14 +34,17 @@ device_profiles = {
 }
 
 def stop():
-    global ser
-    ser.close()
-    ser = None
+    global state
+    state["ser"].close()
+    state["out"].close()
+    state = {}
+    if sys.stdout.name != "<stdout>":
+        sys.stdout.close()
     return
 
-def start(profile=None):
-    global ser
-    if ser is not None:
+def start(profile=None, stdout=None):
+    global state
+    if state != {}:
         print("WARN: Serial already initialized, closing previous serial connection first")
         stop()
     if profile is None:
@@ -69,38 +73,42 @@ def start(profile=None):
         try:
             conn_args["port"] = port
             print(conn_args)
-            ser = serial.Serial(**conn_args)
+            state["ser"] = serial.Serial(**conn_args)
+            state["out"] = open(stdout, "w") if stdout else sys.stdout
             print(f"Attached to serial port {port}")
             break
         except serial.SerialException:
             continue
-        except:
+        except Exception as e:
+            print(e)
             break
-    if ser is None:
+    if state == {}:
         print("ERROR: Couldn't find a port to connect to")
-    return ser
+        return
+
+    return state
 
 def w(b):
-    ser.write(b)
+    state["ser"].write(b)
 
 def r():
-    return ser.read()
+    return state["ser"].read()
 
 def rl():
-    return ser.readline()
+    return state["ser"].readline()
 
 def loop_rl():
-    if ser is None:
+    if state["ser"] is None:
         print("ERROR: Need to init serial connection first, call start()")
         return
     print("starting loop_rl")
     while True:
         try:
-            line = rl()
+            line = rl().decode()
             if line != b"":
-                print(line)
+                state["out"].write(line)
         except Exception as e:
-            if ser is None:
+            if state["ser"] is None:
                 break
             else:
                 raise e
