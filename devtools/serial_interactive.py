@@ -27,6 +27,7 @@ device_profiles = {
         'baudrate': 9600,
         'bytesize': serial.EIGHTBITS,
         'timeout': 5,
+        'parity': serial.PARITY_NONE,
         'stopbits': serial.STOPBITS_ONE,
     }
 }
