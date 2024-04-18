@@ -13,6 +13,8 @@ option(ASSIMP_BUILD_SAMPLES OFF)
 option(ASSIMP_BUILD_TESTS OFF)
 add_subdirectory(vendor/assimp)
 
+option(BUILD_BULLET2_DEMOS OFF)
+option(BUILD_BULLET3_DEMOS OFF)
 option(BUILD_CPU_DEMOS OFF)
 option(BUILD_EXTRAS OFF)
 option(BUILD_OPENGL3_DEMOS OFF)
@@ -35,8 +37,15 @@ include_directories(include/
                     vendor/glfw/include/
                     vendor/glew/auto/src)
 
-file(GLOB PROJECT_HEADERS include/*.hpp)
-file(GLOB PROJECT_SOURCES src/*.cpp)
+set(PROJECT_SOURCES
+    src/main.cpp
+    src/render.cpp
+    src/data.cpp
+)
+set(PROJECT_HEADERS
+    include/render.hpp
+    include/data.hpp
+)
 file(GLOB PROJECT_SHADERS shaders/*.comp
                           shaders/*.frag
                           shaders/*.geom
