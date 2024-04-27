@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include "buildtools.h"
 
 typedef int (*command_fn)(int, char**);
 
@@ -23,27 +24,14 @@ int avr_gcc(int argc, char **argv) {
 }
 
 int fc1(int argc, char **argv) {
-    return system("cd fc1 && make clean && make flash");
+    return make(argc, argv, "./fc1/build");
 }
 
 int fc3(int argc, char **argv) {
-    int err, i;
-    char cmd[256] = "make";
-
-    if (0 != (err = chdir("./fc3/build"))) {
-        fprintf(stderr, "Error changing directory: %s\n", strerror(err));
+    int err;
+    if (0 == (err = cmake("fc3")))
         return err;
-    }
-    if (argc > 2) {
-        for (i = 2; i < argc; i++) {
-            strcat(cmd, " ");
-            strcat(cmd, argv[i]);
-        }
-    }
-    printf("%s\n", cmd);
-    if (0 != (err = WEXITSTATUS(system(cmd))))
-        fprintf(stderr, "Error calling system: %s\n", strerror(err));
-    return err;
+    return make(argc, argv, "./fc3/build");
 }
 
 int sensor_calibrate(int argc, char **argv) {
