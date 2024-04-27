@@ -14,6 +14,12 @@
 
 ## Setup
 
+Builds tooling and sets up environment vars, a `./x` executable
+
+```
+./init.sh
+```
+
 ### ESP32
 
 Set `export ESP_IDF_PATH=...` in your shell profile

@@ -5,28 +5,31 @@
 
 typedef void (*command_fn)(int, char**);
 
+void help(int argc, char **argv);
+
 typedef struct {
-    char* type;
+    char *type;
     command_fn fn;
+	char *description;
 } command;
 
-void handle_serial(int argc, char **argv) {
+void serial(int argc, char **argv) {
     system("ipython -i -c \"%load devtools/serial_interactive.py\"");
 }
 
-void handle_avr_gcc(int argc, char **argv) {
+void avr_gcc(int argc, char **argv) {
     system("avr-gcc -print-search-dirs");
 }
 
-void handle_fc1(int argc, char **argv) {
+void fc1(int argc, char **argv) {
     system("cd fc1 && make clean && make flash");
 }
 
-void handle_sensor_calibrate(int argc, char **argv) {
+void sensor_calibrate(int argc, char **argv) {
     system("cd sensor_calibrate && idf.py build");
 }
 
-void handle_physics_sim(int argc, char **argv) {
+void sim(int argc, char **argv) {
     system("cd ./physics_sim/build && cmake ../ && make && ./sim");
 }
 
@@ -37,21 +40,27 @@ void gen_compile_commands(int argc, char **argv) {
     }
 }
 
-int main(int argc, char *argv[]) {
-    if (argc < 2) {
-        printf("Usage: %s <command>\n", argv[0]);
-        return 1;
-    }
+command commands[] = {
+    {"avr-gcc", avr_gcc, "Show location of avr gcc libraries"},
+    {"fc1", fc1, "Compile and flash FC1"},
+    {"gen-compile-commands", gen_compile_commands, "Generate compile_commands.json for LSP"},
+    {"sensor-calibrate", sensor_calibrate, "Build ESP32 sensor calibration app"},
+    {"serial", serial, "Start ipython repl loading in pyserial utils"},
+    {"sim", sim, "Build and start physics sim"},
+    {"info", help, "Display help"},
+    {NULL, NULL, NULL}
+};
 
-    command commands[] = {
-        {"avr-gcc", handle_avr_gcc},
-        {"fc1", handle_fc1},
-        {"gen-compile-commands", gen_compile_commands},
-        {"sensor-calibrate", handle_sensor_calibrate},
-        {"serial", handle_serial},
-        {"sim", handle_physics_sim},
-        {NULL, NULL}  // Sentinel value to mark the end of the array
-    };
+void help(int argc, char *argv[]) {
+    printf("Available commands:\n");
+    for (int i = 0; commands[i].type != NULL; i++) {
+        printf("  %s: %s\n", commands[i].type, commands[i].description);
+    }
+}
+
+int main(int argc, char *argv[]) {
+    if (argc < 2)
+		goto invalid_input;
 
     for (int i = 0; commands[i].type != NULL; i++) {
         if (strcmp(argv[1], commands[i].type) == 0) {
@@ -59,7 +68,8 @@ int main(int argc, char *argv[]) {
             return 0;
         }
     }
-
-    printf("Invalid command\n");
-    return 1;
+invalid_input:
+	printf("Usage: %s <command>\n", argv[0]);
+	help(argc, argv);
+	return 1;
 }

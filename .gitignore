@@ -7,6 +7,7 @@
 **/size_info.txt
 **/__pycache__/
 # Dev
+x
 compile_commands.json
 # Kicad
 **/*.bak
