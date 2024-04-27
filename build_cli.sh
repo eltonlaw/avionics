@@ -14,4 +14,4 @@ build_cli() {
 }
 
 build_cli
-direnv allow .
+# direnv allow .

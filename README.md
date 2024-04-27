@@ -14,10 +14,11 @@
 
 ## Setup
 
-Builds tooling and sets up environment vars, a `./x` executable
+Sets up environment vars and builds the CLI, a `./x` executable
 
 ```
-./init.sh
+./build_cli.sh
+direnv allow .
 ```
 
 ### ESP32
