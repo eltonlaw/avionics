@@ -81,7 +81,7 @@ int main(void)
   /* USER CODE BEGIN 1 */
   mpu6050_cfg_t mpu6050_cfg;
   imu_data_t imu_data;
-  state_t state = {0, 0, 0};
+  state_t state = {0, 0, 0, 0, 0, 0, 0, 0, 0};
   error_t err;
   sam_m10q_cfg_t sam_m10q_cfg;
   sam_m10q_data_t sam_m10q_data;
