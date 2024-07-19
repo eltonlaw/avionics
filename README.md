@@ -55,3 +55,7 @@ $ telnet localhost 4444
 ```
 sudo pacman -S rpcsvc-proto chrpath cpio diffstat inetutils glibc
 ```
+
+## BOM
+
+https://www.digikey.ca/en/mylists/list/2G2K0KZVBX
