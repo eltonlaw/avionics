@@ -25,6 +25,7 @@
 #include <stdio.h>
 #include "log.h"
 #include "mpu6050.h"
+#include "bme280.h"
 #include "sam_m10q.h"
 /* USER CODE END Includes */
 
@@ -82,6 +83,7 @@ int main(void)
 
   /* USER CODE BEGIN 1 */
   mpu6050_cfg_t mpu6050_cfg;
+  bme280_cfg_t bme280_cfg;
   imu_data_t imu_data;
   state_t state = {0, 0, 0, 0, 0, 0, 0, 0, 0};
   error_t err;
@@ -128,6 +130,8 @@ int main(void)
   mpu6050_cfg.timx = &htim3;
   mpu6050_cfg.gyro_range = MPU6050_GYRO_RANGE_250;
   mpu6050_cfg.accel_range = MPU6050_ACCEL_RANGE_2;
+
+
   if (E_OK == (err = mpu6050_init_w_retry(&mpu6050_cfg, 4))) {
       log_info("Initialized MPU6050 accel_scaler=%lf, gyro_scaler=%lf, accel_offset=(x:%lf, y:%lf, z:%lf), gyro_offset=(x:%lf, y:%lf, z:%lf)\n",
           mpu6050_cfg.accel_scaler,
@@ -142,8 +146,16 @@ int main(void)
       panic("Failed to initialize MPU6050: %d\n", err);
   }
 
-  sam_m10q_cfg.uartx = &huart3;
-  sam_m10q_init(&sam_m10q_cfg);
+  // sam_m10q_cfg.uartx = &huart3;
+  // sam_m10q_init(&sam_m10q_cfg);
+
+  bme280_cfg.i2cx = &hi2c2;
+  bme280_cfg.addr = BME280_ADDR_0;
+  if (E_OK == (err = bme280_init(&bme280_cfg))) {
+      log_info("Initialized BME280\n");
+  } else {
+      panic("Failed to initialize BME280: %d\n", err);
+  }
   /* USER CODE END 2 */
 
   /* Infinite loop */
