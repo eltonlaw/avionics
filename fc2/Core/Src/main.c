@@ -150,7 +150,7 @@ int main(void)
   // sam_m10q_init(&sam_m10q_cfg);
 
   bme280_cfg.i2cx = &hi2c2;
-  bme280_cfg.addr = BME280_ADDR_0;
+  bme280_cfg.addr = BME280_ADDR_1;
   if (E_OK == (err = bme280_init(&bme280_cfg))) {
       log_info("Initialized BME280\n");
   } else {
