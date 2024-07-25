@@ -7,6 +7,32 @@
 #include "log.h"
 #include "bme280.h"
 
+/* Calibration data hardcoded into NVM during production */
+error_t bme280_calibrate(bme280_cfg_t *cfg) {
+    HAL_StatusTypeDef status;
+    uint8_t buf[24];
+    status = HAL_I2C_Mem_Read(cfg->i2cx, cfg->addr, BME280_REG_TEMP_PRESS_CALIB_DATA, 1, buf, 24, HAL_MAX_DELAY);
+    if (status != HAL_OK) {
+        log_error("BME280 failed to read calibration data %d\n", status);
+        return (error_t) status;
+    }
+
+    cfg->dig_t1 = (buf[1] << 8) | buf[0];
+    cfg->dig_t2 = (int16_t)((buf[3] << 8) | buf[2]);
+    cfg->dig_t3 = (int16_t)((buf[5] << 8) | buf[4]);
+    cfg->dig_p1 = (buf[7] << 8) | buf[6];
+    cfg->dig_p2 = (int16_t)((buf[9] << 8) | buf[8]);
+    cfg->dig_p3 = (int16_t)((buf[11] << 8) | buf[10]);
+    cfg->dig_p4 = (int16_t)((buf[13] << 8) | buf[12]);
+    cfg->dig_p5 = (int16_t)((buf[15] << 8) | buf[14]);
+    cfg->dig_p6 = (int16_t)((buf[17] << 8) | buf[16]);
+    cfg->dig_p7 = (int16_t)((buf[19] << 8) | buf[18]);
+    cfg->dig_p8 = (int16_t)((buf[21] << 8) | buf[20]);
+    cfg->dig_p9 = (int16_t)((buf[23] << 8) | buf[22]);
+
+    return E_OK;
+}
+
 error_t bme280_soft_reset(bme280_cfg_t *cfg) {
     HAL_StatusTypeDef status;
     uint8_t buf[1];
@@ -66,6 +92,10 @@ error_t bme280_init(bme280_cfg_t *cfg) {
         return E_I2C_WRONG_DEVICE;
     }
     err = bme280_soft_reset(cfg);
+    if (err != E_OK) {
+        return err;
+    }
+    err = bme280_calibrate(cfg);
     if (err != E_OK) {
         return err;
     }
