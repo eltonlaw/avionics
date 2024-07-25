@@ -8,7 +8,7 @@
 #include "bme280.h"
 
 /* Calibration data hardcoded into NVM during production */
-error_t bme280_calibrate(bme280_cfg_t *cfg) {
+static error_t bme280_calibrate(bme280_cfg_t *cfg) {
     HAL_StatusTypeDef status;
     uint8_t buf[24];
     status = HAL_I2C_Mem_Read(cfg->i2cx, cfg->addr, BME280_REG_TEMP_PRESS_CALIB_DATA, 1, buf, 24, HAL_MAX_DELAY);
@@ -33,7 +33,7 @@ error_t bme280_calibrate(bme280_cfg_t *cfg) {
     return E_OK;
 }
 
-error_t bme280_soft_reset(bme280_cfg_t *cfg) {
+static error_t bme280_soft_reset(bme280_cfg_t *cfg) {
     HAL_StatusTypeDef status;
     uint8_t buf[1];
     buf[0] = BME280_SOFT_RESET_COMMAND;
@@ -63,16 +63,64 @@ error_t bme280_soft_reset(bme280_cfg_t *cfg) {
     return E_OK;
 }
 
+/* Temperature compensation formula in bosch API */
+static double bme280_comp_temp(bme280_cfg_t *cfg, int32_t t_adc) {
+    double var1, var2, t_out;
+    var1 = (((double) t_adc) / 16384.0 - ((double) cfg->dig_t1) / 1024.0) * ((double) cfg->dig_t2);
+    var2 = (((double) t_adc) / 131072.0 - ((double) cfg->dig_t1) / 8192.0);
+    var2 = var2 * var2 * ((double) cfg->dig_t3);
+    cfg->t_fine = (int32_t) (var1 + var2);
+    t_out = (var1 + var2) / 5120.0;
+    if (t_out < BME280_TEMP_MIN) {
+        t_out = BME280_TEMP_MIN;
+    } else if (t_out > BME280_TEMP_MAX) {
+        t_out = BME280_TEMP_MAX;
+    }
+    return t_out;
+}
+
+/* Pressure compensation formula in bosch API */
+static double bme280_comp_press(bme280_cfg_t *cfg, uint32_t p_adc) {
+    double var1, var2, p_out;
+    var1 = ((double) cfg->t_fine / 2.0) - 64000.0;
+    var2 = var1 * var1 * ((double) cfg->dig_p6) / 32768.0;
+    var2 = var2 + var1 * ((double) cfg->dig_p5) * 2.0;
+    var2 = (var2 / 4.0) + (((double) cfg->dig_p4) * 65536.0);
+    var1 = (((double) cfg->dig_p3) * var1 * var1 / 524288.0 + ((double) cfg->dig_p2) * var1) / 524288.0;
+    var1 = (1.0 + var1 / 32768.0) * ((double) cfg->dig_p1);
+    if (var1 == 0.0) {
+        return 0; // avoid exception caused by division by zero
+    }
+    p_out = 1048576.0 - (double) p_adc;
+    p_out = (p_out - (var2 / 4096.0)) * 6250.0 / var1;
+    var1 = ((double) cfg->dig_p9) * p_out * p_out / 2147483648.0;
+    var2 = p_out * ((double) cfg->dig_p8) / 32768.0;
+    p_out = p_out + (var1 + var2 + ((double) cfg->dig_p7)) / 16.0;
+    if (p_out < BME280_PRESS_MIN) {
+        p_out = BME280_PRESS_MIN;
+    } else if (p_out > BME280_PRESS_MAX) {
+        p_out = BME280_PRESS_MAX;
+    }
+    return p_out;
+}
+
+static void bme280_comp(bme280_cfg_t *cfg, bme280_data_t *data){
+    data->temperature = bme280_comp_temp(cfg, data->temperature);
+    data->pressure = bme280_comp_press(cfg, data->pressure);
+}
+
 error_t bme280_read(bme280_cfg_t *cfg, bme280_data_t *data) {
     HAL_StatusTypeDef status;
-    uint8_t buf[3];
-    status = HAL_I2C_Mem_Read(cfg->i2cx, cfg->addr, BME280_REG_PRESS_MSB, 1, buf, 3, HAL_MAX_DELAY);
+    uint8_t buf[6];
+    status = HAL_I2C_Mem_Read(cfg->i2cx, cfg->addr, BME280_REG_PRESS_MSB, 1, buf, 6, HAL_MAX_DELAY);
     if (status != HAL_OK) {
         log_error("BME280 failed to read data %d\n", status);
         return (error_t) status;
     }
-    /* read uncompensated pressure */
+    /* read uncompensated pressure and temperature */
     data->pressure = (buf[0] << 12) | (buf[1] << 4) | (buf[2] >> 4);
+    data->temperature = (buf[3] << 12) | (buf[4] << 4) | (buf[5] >> 4);
+    bme280_comp(cfg, data);
 
     return E_OK;
 }

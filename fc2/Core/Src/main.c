@@ -85,6 +85,7 @@ int main(void)
   mpu6050_cfg_t mpu6050_cfg;
   bme280_cfg_t bme280_cfg;
   imu_data_t imu_data;
+  bme280_data_t bme280_data;
   state_t state = {0, 0, 0, 0, 0, 0, 0, 0, 0};
   error_t err;
   sam_m10q_cfg_t sam_m10q_cfg;
@@ -168,6 +169,12 @@ int main(void)
     mpu6050_read(&mpu6050_cfg, &imu_data);
     double delta_ticks = __HAL_TIM_GET_COUNTER(&htim3);
     __HAL_TIM_SET_COUNTER(&htim3, 0);
+
+    /* FIXME: Incorporate into altitude calculations*/
+    bme280_read(&bme280_cfg, &bme280_data);
+    log_info("Temperature: %lf, Pressure: %lf, Humidity: %lf\n",
+            bme280_data.temperature, bme280_data.pressure, bme280_data.humidity);
+
     update_state(&state, &imu_data, delta_ticks);
 
     event_imu_read(imu_data.accel_x, imu_data.accel_y, imu_data.accel_z,

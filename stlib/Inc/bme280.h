@@ -21,7 +21,16 @@
 
 #define BME280_REG_TEMP_CALIB_DATA 0x88
 
+/* 0xF7 to 0xF9 is pressure */
 #define BME280_REG_PRESS_MSB 0xF7
+/* 0xFA to 0xFC is temperature */
+#define BME280_REG_TEMP_MSB 0xFA
+
+#define BME280_TEMP_MIN -40
+#define BME280_TEMP_MAX 85
+
+#define BME280_PRESS_MIN 30000.0
+#define BME280_PRESS_MAX 110000.0
 
 typedef struct {
     I2C_HandleTypeDef *i2cx;
@@ -38,6 +47,7 @@ typedef struct {
     int16_t dig_p7;
     int16_t dig_p8;
     int16_t dig_p9;
+    int32_t t_fine;
 } bme280_cfg_t;
 
 typedef struct {
@@ -47,5 +57,3 @@ typedef struct {
 
 error_t bme280_init(bme280_cfg_t *cfg);
 error_t bme280_read(bme280_cfg_t *cfg, bme280_data_t *data);
-error_t bme280_reset(bme280_cfg_t *cfg);
-error_t bme280_calibrate(bme280_cfg_t *cfg);
