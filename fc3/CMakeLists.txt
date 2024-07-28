@@ -106,8 +106,9 @@ if(FC3_G0)
         ${CMAKE_CURRENT_SOURCE_DIR}/../stlib/Inc)
     stm32_print_size_of_target(${TARGET_NAME})
     stm32_generate_hex_file(${TARGET_NAME})
+    stm32_generate_binary_file(${TARGET_NAME})
 endif()
 add_custom_target(flash
-    COMMAND STM32_Programmer_CLI -c port=SWD -w ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_NAME}.hex -v -rst
+    COMMAND STM32_Programmer_CLI -c port=SWD -w ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_NAME}.bin 0x8000000 -v -rst
     COMMENT "Flashing the board..."
 )
