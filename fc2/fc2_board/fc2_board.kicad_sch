@@ -4552,6 +4552,16 @@
 	)
 	(wire
 		(pts
+			(xy 54.61 27.94) (xy 54.61 33.02)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1c0ae41b-ef3e-4b40-a010-410b72bff43e")
+	)
+	(wire
+		(pts
 			(xy 193.675 36.83) (xy 193.675 29.21)
 		)
 		(stroke
@@ -4599,16 +4609,6 @@
 			(type default)
 		)
 		(uuid "2effbd10-ce7d-4e56-96ec-e48f4fc22f61")
-	)
-	(wire
-		(pts
-			(xy 54.61 27.94) (xy 54.61 31.75)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "37793700-eaf8-418f-99c3-a68212afef10")
 	)
 	(wire
 		(pts
@@ -5609,6 +5609,17 @@
 			(type default)
 		)
 		(uuid "f8ee1c16-3893-4a33-87d3-f466c5c3317e")
+	)
+	(label "22.8V - 25.2V"
+		(at 55.88 30.48 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "1c1ccdca-e9d1-4443-a95c-53dbdb08e08d")
 	)
 	(label "S2"
 		(at 50.8 99.06 0)
@@ -8003,7 +8014,7 @@
 				)
 			)
 		)
-		(property "Value" "BAT"
+		(property "Value" "6S"
 			(at 48.26 24.13 0)
 			(effects
 				(font
@@ -8779,7 +8790,7 @@
 	)
 	(symbol
 		(lib_id "power:VCC")
-		(at 54.61 31.75 180)
+		(at 54.61 33.02 180)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -8788,7 +8799,7 @@
 		(fields_autoplaced yes)
 		(uuid "ea72ba92-4bff-4c82-81db-ae4eeca04d73")
 		(property "Reference" "#PWR019"
-			(at 54.61 27.94 0)
+			(at 54.61 29.21 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8797,7 +8808,7 @@
 			)
 		)
 		(property "Value" "VBAT"
-			(at 54.61 36.83 0)
+			(at 54.61 38.1 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8805,7 +8816,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 54.61 31.75 0)
+			(at 54.61 33.02 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8814,7 +8825,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 54.61 31.75 0)
+			(at 54.61 33.02 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8823,7 +8834,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"VCC\""
-			(at 54.61 31.75 0)
+			(at 54.61 33.02 0)
 			(effects
 				(font
 					(size 1.27 1.27)
