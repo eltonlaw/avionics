@@ -125,6 +125,23 @@ error_t bme280_read(bme280_cfg_t *cfg, bme280_data_t *data) {
     return E_OK;
 }
 
+error_t bme280_change_mode(uint8_t mode) {
+    HAL_StatusTypeDef status;
+    uint8_t buf[1];
+    status = HAL_I2C_Mem_Read(cfg->i2cx, cfg->addr, BME280_REG_PWR_CTRL, 1, buf, 1, HAL_MAX_DELAY);
+    if (status != HAL_OK) {
+        log_error("BME280 failed to read power control %d\n", status);
+        return (error_t) status;
+    }
+    buf[0] = (buf[0] & 0xFC) | mode;
+    status = HAL_I2C_Mem_Write(cfg->i2cx, cfg->addr, BME280_REG_PWR_CTRL, 1, buf, 1, HAL_MAX_DELAY);
+    if (status != HAL_OK) {
+        log_error("BME280 failed to write power control %d\n", status);
+        return (error_t) status;
+    }
+    return E_OK;
+}
+
 error_t bme280_init(bme280_cfg_t *cfg) {
     error_t err;
     HAL_StatusTypeDef status;
@@ -139,12 +156,15 @@ error_t bme280_init(bme280_cfg_t *cfg) {
         log_error("BME280 incorrect chip id E=%x A=%x\n", BME280_CHIP_ID, buf[0]);
         return E_I2C_WRONG_DEVICE;
     }
-    err = bme280_soft_reset(cfg);
-    if (err != E_OK) {
+    if ((bme280_soft_reset(cfg)) != E_OK) {
         return err;
     }
-    err = bme280_calibrate(cfg);
-    if (err != E_OK) {
+    if ((bme280_calibrate(cfg)) != E_OK) {
+        return err;
+    }
+    /* By default, after powering up the sensor is in sleep mode. Change to normal mode
+     * for continuous measurements */
+    if ((err = bme280_change_mode(BME280_PWR_MODE_NORMAL)) != E_OK) {
         return err;
     }
 

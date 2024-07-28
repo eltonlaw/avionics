@@ -4,6 +4,11 @@
 #define BME280_ADDR_0 0x76
 #define BME280_ADDR_1 0x77
 
+/* Time to first after both V_dd > 1.58V and V_ddio > 0.65V is 2 ms */
+#define BME280_STARTUP_DELAY_MS 2
+
+#define BME280_REG_TEMP_CALIB_DATA 0x88
+
 #define BME280_REG_CHIP_ID 0xD0
 #define BME280_CHIP_ID 0x60
 
@@ -16,10 +21,14 @@
 #define BME280_REG_STATUS 0xF3
 #define BME280_STATUS_IM_UPDATE 0x01
 
-/* Time to first after both V_dd > 1.58V and V_ddio > 0.65V is 2 ms */
-#define BME280_STARTUP_DELAY_MS 2
-
-#define BME280_REG_TEMP_CALIB_DATA 0x88
+/* Change Operation mode by changing pins [1:0]
+ * Sleep=00
+ * Normal=11
+ * ForcedMeasurement=01 */
+#define BME280_REG_PWR_CTRL 0xF4
+#define BME280_PWR_MODE_SLEEP 0x00
+#define BME280_PWR_MODE_FORCED 0x01
+#define BME280_PWR_MODE_NORMAL 0x03
 
 /* 0xF7 to 0xF9 is pressure */
 #define BME280_REG_PRESS_MSB 0xF7
