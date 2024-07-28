@@ -60,11 +60,28 @@ int gen_compile_commands(int argc, char **argv) {
     return err;
 }
 
+int gdb(int argc, char **argv) {
+    if (argc < 3) {
+        fprintf(stderr, "Usage: %s <elf file>\n", argv[0]);
+        return EINVAL;
+    }
+    char cmd[256];
+    snprintf(cmd, sizeof(cmd), "arm-none-eabi-gdb %s -x devtools/.gdbinit", argv[2]);
+    printf("%s\n", cmd);
+    return system(cmd);
+}
+
+int openocd(int argc, char **argv) {
+	return system("openocd -f interface/stlink.cfg -f target/stm32g0x.cfg  -s ext/openocd/tcl");
+}
+
 command commands[] = {
     {"avr-gcc", avr_gcc, "Show location of avr gcc libraries"},
     {"fc1", fc1, "Compile and flash FC1"},
     {"fc3", fc3, "Compile and flash FC3"},
+    {"gdb", gdb, "Start gdb server"},
     {"gen-compile-commands", gen_compile_commands, "Generate compile_commands.json for LSP"},
+    {"openocd", openocd, "Start openocd server"},
     {"sensor-calibrate", sensor_calibrate, "Build ESP32 sensor calibration app"},
     {"serial", serial, "Start ipython repl loading in pyserial utils"},
     {"sim", sim, "Build and start physics sim"},

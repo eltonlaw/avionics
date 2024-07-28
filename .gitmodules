@@ -45,4 +45,4 @@
 	url = git@github.com:yoctoproject/poky.git
 [submodule "ext/openocd"]
 	path = ext/openocd
-	url = git@github.com:bshewan/openocd.git
+	url = git@github.com:openocd-org/openocd.git
