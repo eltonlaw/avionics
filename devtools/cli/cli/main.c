@@ -24,14 +24,20 @@ int avr_gcc(int argc, char **argv) {
 }
 
 int fc1(int argc, char **argv) {
-    return make(argc, argv, "./fc1/build");
+    return make(argc, argv, "./build/fc1");
 }
 
 int fc3(int argc, char **argv) {
     int err;
-    if (0 == (err = cmake("fc3")))
+    if (0 != (err = cmake("fc3"))) {
+        fprintf(stderr, "Error running cmake: %s\n", strerror(err));
         return err;
-    return make(argc, argv, "./fc3/build");
+    }
+    if (0 != (err = system("cp build/fc3/compile_commands.json ."))) {
+        fprintf(stderr, "Error copying compile_commands.json: %s\n", strerror(err));
+        return err;
+    }
+    return make(argc, argv, "./build/fc3");
 }
 
 int sensor_calibrate(int argc, char **argv) {
