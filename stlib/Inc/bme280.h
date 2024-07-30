@@ -1,8 +1,8 @@
 #include "stm32g0xx.h"
 #include "error.h"
 /* 0x76 when SDO pulled low and 0x77 when SDO pulled high */
-#define BME280_ADDR_0 0x76
-#define BME280_ADDR_1 0x77
+#define BME280_ADDR_0 (0x76 << 1)
+#define BME280_ADDR_1 (0x77 << 1)
 
 /* Time to first after both V_dd > 1.58V and V_ddio > 0.65V is 2 ms */
 #define BME280_STARTUP_DELAY_MS 2
