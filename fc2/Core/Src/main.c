@@ -124,7 +124,7 @@ int main(void)
     HAL_GPIO_TogglePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin);
   }
 
-  log_init(&huart2, LOG_LEVEL_INFO);
+  log_init(&huart2, LOG_LEVEL_DEBUG);
   log_info("Logging initialized\n");
 
   mpu6050_cfg.i2cx = &hi2c1;

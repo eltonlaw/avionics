@@ -62,6 +62,7 @@ typedef struct {
 typedef struct {
     uint32_t pressure;
     int32_t temperature;
+    uint32_t humidity;
 } bme280_data_t;
 
 error_t bme280_init(bme280_cfg_t *cfg);
