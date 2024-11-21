@@ -25,3 +25,8 @@ compile_commands.json
 **/Debug
 **/Release
 **/mx.scratch
+.metadata
+*.o
+*.d
+*.elf
+*.map
