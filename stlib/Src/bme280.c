@@ -158,11 +158,11 @@ error_t bme280_init(bme280_cfg_t *cfg) {
         return E_I2C_WRONG_DEVICE;
     }
     log_debug("BME280 soft resetting\n");
-    if ((bme280_soft_reset(cfg)) != E_OK) {
+    if ((err = bme280_soft_reset(cfg)) != E_OK) {
         return err;
     }
     log_debug("BME280 calibrating\n");
-    if ((bme280_calibrate(cfg)) != E_OK) {
+    if ((err = bme280_calibrate(cfg)) != E_OK) {
         return err;
     }
     /* By default, after powering up the sensor is in sleep mode. Change to normal mode
