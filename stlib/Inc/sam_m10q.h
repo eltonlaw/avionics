@@ -7,10 +7,10 @@
 #define SAM_M10Q_CLASS_ID_UBX_CFG_VALGET 0x068b
 #define SAM_M10Q_CLASS_ID_UBX_MON_VER 0x0a04
 
-#define SAM_M10Q_ADDR (0x42 << 1)
+#define SAM_M10Q_I2C_ADDR (0x42 << 1)
 #define SAM_M10Q_NUM_BYTES_TO_READ_H 0xFD
 #define SAM_M10Q_NUM_BYTES_TO_READ_L 0xFE
-#define SAM_M10Q_VALUE 0xFF
+#define SAM_M10Q_DATA 0xFF
 
 /* ublox datatypes from interface description
  *

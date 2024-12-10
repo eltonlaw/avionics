@@ -23,10 +23,7 @@
 /* USER CODE BEGIN Includes */
 #include <string.h>
 #include <stdio.h>
-#include "log.h"
-#include "mpu6050.h"
-#include "bme280.h"
-#include "sam_m10q.h"
+#include "quadcopter.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -82,14 +79,6 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-  mpu6050_cfg_t mpu6050_cfg;
-  bme280_cfg_t bme280_cfg;
-  imu_data_t imu_data;
-  bme280_data_t bme280_data;
-  state_t state = {0, 0, 0, 0, 0, 0, 0, 0, 0};
-  error_t err;
-  sam_m10q_cfg_t sam_m10q_cfg;
-  sam_m10q_data_t sam_m10q_data;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -116,70 +105,15 @@ int main(void)
   MX_USART3_UART_Init();
   MX_I2C2_Init();
   /* USER CODE BEGIN 2 */
-  HAL_TIM_Base_Start(&htim3);
-  __HAL_TIM_SET_COUNTER(&htim3, 0);
-
-  for (int i = 0; i < 10; i++) {
-    HAL_Delay(200);
-    HAL_GPIO_TogglePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin);
-  }
-
-  log_init(&huart2, LOG_LEVEL_DEBUG);
-  log_info("Logging initialized\n");
-
-  mpu6050_cfg.i2cx = &hi2c1;
-  mpu6050_cfg.timx = &htim3;
-  mpu6050_cfg.gyro_range = MPU6050_GYRO_RANGE_250;
-  mpu6050_cfg.accel_range = MPU6050_ACCEL_RANGE_2;
-
-
-  if (E_OK == (err = mpu6050_init_w_retry(&mpu6050_cfg, 4))) {
-      log_info("Initialized MPU6050 accel_scaler=%lf, gyro_scaler=%lf, accel_offset=(x:%lf, y:%lf, z:%lf), gyro_offset=(x:%lf, y:%lf, z:%lf)\n",
-          mpu6050_cfg.accel_scaler,
-          mpu6050_cfg.gyro_scaler,
-          mpu6050_cfg.offset.accel_x,
-          mpu6050_cfg.offset.accel_y,
-          mpu6050_cfg.offset.accel_z,
-          mpu6050_cfg.offset.gyro_x,
-          mpu6050_cfg.offset.gyro_y,
-          mpu6050_cfg.offset.gyro_z);
-  } else {
-      panic("Failed to initialize MPU6050: %d\n", err);
-  }
-
-  // sam_m10q_cfg.uartx = &huart3;
-  // sam_m10q_init(&sam_m10q_cfg);
-
-  bme280_cfg.i2cx = &hi2c2;
-  bme280_cfg.addr = BME280_ADDR_0;
-  if (E_OK == (err = bme280_init(&bme280_cfg))) {
-      log_info("Initialized BME280\n");
-  } else {
-      panic("Failed to initialize BME280: %d\n", err);
-  }
+  qc_state_t state;
+  qc_init(&state, &hi2c1, &hi2c2, &huart2, &huart3, &htim3);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  log_info("Initialization complete, starting main loop\n");
-  HAL_Delay(3000);
-  __HAL_TIM_SET_COUNTER(&htim3, 0);
   while (1)
   {
-    mpu6050_read(&mpu6050_cfg, &imu_data);
-    double delta_ticks = __HAL_TIM_GET_COUNTER(&htim3);
-    __HAL_TIM_SET_COUNTER(&htim3, 0);
-
-    /* FIXME: Incorporate into altitude calculations*/
-    bme280_read(&bme280_cfg, &bme280_data);
-    log_info("Temperature: %lf, Pressure: %lf, Humidity: %lf\n",
-            bme280_data.temperature, bme280_data.pressure, bme280_data.humidity);
-
-    update_state(&state, &imu_data, delta_ticks);
-
-    event_imu_read(imu_data.accel_x, imu_data.accel_y, imu_data.accel_z,
-            imu_data.gyro_x, imu_data.gyro_y, imu_data.gyro_z);
-    // sam_m10q_read(&sam_m10q_cfg, &sam_m10q_data);
+    qc_update(&state);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
