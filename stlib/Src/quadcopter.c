@@ -1,7 +1,7 @@
 #include "log.h"
 #include "quadcopter.h"
 
-int qc_init(
+void qc_init(
     qc_state_t *st,
     I2C_HandleTypeDef *hi2c1,
     I2C_HandleTypeDef *hi2c2,
@@ -9,6 +9,8 @@ int qc_init(
     UART_HandleTypeDef *huart3,
     TIM_HandleTypeDef *htim3
 ) {
+    error_t err;
+
     HAL_TIM_Base_Start(htim3);
     __HAL_TIM_SET_COUNTER(htim3, 0);
     st->htim3 = htim3;
@@ -27,7 +29,7 @@ int qc_init(
     st->mpu6050_cfg.accel_range = MPU6050_ACCEL_RANGE_2;
 
 
-    if (E_OK == (st->err = mpu6050_init_w_retry(&st->mpu6050_cfg, 4))) {
+    if (E_OK == (err = mpu6050_init_w_retry(&st->mpu6050_cfg, 4))) {
         log_info("Initialized MPU6050 accel_scaler=%lf, gyro_scaler=%lf, accel_offset=(x:%lf, y:%lf, z:%lf), gyro_offset=(x:%lf, y:%lf, z:%lf)\n",
             st->mpu6050_cfg.accel_scaler,
             st->mpu6050_cfg.gyro_scaler,
@@ -38,7 +40,7 @@ int qc_init(
             st->mpu6050_cfg.offset.gyro_y,
             st->mpu6050_cfg.offset.gyro_z);
     } else {
-        panic("Failed to initialize MPU6050: %d\n", st->err);
+        panic("Failed to initialize MPU6050: %d\n", err);
     }
 
     // sam_m10q_cfg.uartx = &huart3;
@@ -57,7 +59,7 @@ int qc_init(
     __HAL_TIM_SET_COUNTER(htim3, 0);
 }
 
-int qc_update(qc_state_t* st) {
+void qc_update(qc_state_t* st) {
     mpu6050_read(&st->mpu6050_cfg, &st->imu_data);
     double delta_ticks = __HAL_TIM_GET_COUNTER(st->htim3);
     __HAL_TIM_SET_COUNTER(st->htim3, 0);
@@ -72,5 +74,4 @@ int qc_update(qc_state_t* st) {
     event_imu_read(st->imu_data.accel_x, st->imu_data.accel_y, st->imu_data.accel_z,
             st->imu_data.gyro_x, st->imu_data.gyro_y, st->imu_data.gyro_z);
     // sam_m10q_read(&sam_m10q_cfg, &sam_m10q_data);
-    return 0;
 }

@@ -15,13 +15,12 @@ typedef struct {
     imu_data_t imu_data;
     bme280_data_t bme280_data;
     pose_t pose;
-    error_t err;
     sam_m10q_cfg_t sam_m10q_cfg;
     sam_m10q_data_t sam_m10q_data;
     TIM_HandleTypeDef *htim3;
 } qc_state_t;
 
-int qc_init(
+void qc_init(
     qc_state_t *state,
     I2C_HandleTypeDef *hi2c1,
     I2C_HandleTypeDef *hi2c2,
@@ -29,4 +28,4 @@ int qc_init(
     UART_HandleTypeDef *huart3,
     TIM_HandleTypeDef *htim3);
 
-int qc_update(qc_state_t *state);
+void qc_update(qc_state_t *state);

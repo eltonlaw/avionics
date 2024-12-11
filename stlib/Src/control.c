@@ -12,8 +12,8 @@ error_t update_pose(pose_t *p, imu_data_t* imu_data, double delta_ticks) {
     double ang_z = p->ang_z + imu_data->gyro_z * dt;
 
     // angle from accelerometer (assumes gravity is only force)
-    double accel_ang_x = atan2(imu_data->accel_y, sqrt(pow(imu_data->accel_x,
-                    2) + pow(imu_data->accel_z, 2)));
+    double accel_ang_x = atan2(imu_data->accel_y,
+        sqrt(pow(imu_data->accel_x, 2) + pow(imu_data->accel_z, 2)));
     double accel_ang_y = atan2(-imu_data->accel_x,
             sqrt(pow(imu_data->accel_y, 2) + pow(imu_data->accel_z, 2)));
 
