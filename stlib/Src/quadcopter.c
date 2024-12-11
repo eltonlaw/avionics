@@ -46,15 +46,13 @@ void qc_init(
     // sam_m10q_cfg.uartx = &huart3;
     // sam_m10q_init(&sam_m10q_cfg);
 
-    // bme280_cfg.i2cx = &hi2c2;
-    // bme280_cfg.addr = BME280_ADDR_0;
-    // if (E_OK == (err = bme280_init(&bme280_cfg))) {
-    //     log_info("Initialized BME280\n");
-    // } else {
-    //     panic("Failed to initialize BME280: %d\n", err);
-    // }
-    //
-    log_info("Initialization complete, starting main loop\n");
+    st->bme280_cfg.i2cx = &hi2c2;
+    st->bme280_cfg.addr = BME280_ADDR_0;
+    if (E_OK == (err = bme280_init(&st->bme280_cfg))) {
+        log_info("Initialized BME280\n");
+    } else {
+        panic("Failed to initialize BME280: %d\n", err);
+    } log_info("Initialization complete, starting main loop\n");
     HAL_Delay(3000);
     __HAL_TIM_SET_COUNTER(htim3, 0);
 }
@@ -65,9 +63,11 @@ void qc_update(qc_state_t* st) {
     __HAL_TIM_SET_COUNTER(st->htim3, 0);
 
     /* FIXME: Incorporate into altitude calculations*/
-    // bme280_read(&bme280_cfg, &bme280_data);
-    // log_info("Temperature: %lf, Pressure: %lf, Humidity: %lf\n",
-    //         bme280_data.temperature, bme280_data.pressure, bme280_data.humidity);
+    bme280_read(&st->bme280_cfg, &st->bme280_data);
+    log_info("T: %lf, P: %lf, H: %lf\n",
+            st->bme280_data.temperature,
+            st->bme280_data.pressure,
+            st->bme280_data.humidity);
 
     update_pose(&st->pose, &st->imu_data, delta_ticks);
 
