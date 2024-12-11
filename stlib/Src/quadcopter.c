@@ -52,9 +52,19 @@ void qc_init(
         log_info("Initialized BME280\n");
     } else {
         panic("Failed to initialize BME280: %d\n", err);
-    } log_info("Initialization complete, starting main loop\n");
+    }
+
+    if (E_OK == bme280_read(&sys->bme280_cfg, &sys->pressure_data)) {
+        log_info("Read BME280 data got %lf hPa reference pressure", sys->pressure_data.pressure);
+        sys->bme280_cfg.pressure_ref = sys->pressure_data.pressure;
+    } else {
+        panic("Failed to read BME280 to get reference pressure\n");
+    }
+
+    log_info("Initialization complete, starting main loop\n");
     HAL_Delay(3000);
     __HAL_TIM_SET_COUNTER(htim3, 0);
+
 }
 
 void qc_update(qc_sys_t* sys) {
@@ -63,13 +73,14 @@ void qc_update(qc_sys_t* sys) {
     __HAL_TIM_SET_COUNTER(sys->htim3, 0);
 
     /* FIXME: Incorporate into altitude calculations*/
-    bme280_read(&sys->bme280_cfg, &sys->bme280_data);
+    bme280_read(&sys->bme280_cfg, &sys->pressure_data);
     log_info("T: %lf, P: %lf, H: %lf\n",
-            sys->bme280_data.temperature,
-            sys->bme280_data.pressure,
-            sys->bme280_data.humidity);
+            sys->pressure_data.temperature,
+            sys->pressure_data.pressure,
+            sys->pressure_data.humidity);
 
-    update_state(&sys->state, &sys->imu_data, delta_ticks);
+    update_state(&sys->state, delta_ticks, &sys->imu_data, &sys->pressure_data,
+            sys->bme280_cfg.pressure_ref);
 
     event_imu_read(sys->imu_data.accel_x,sys->imu_data.accel_y,
             sys->imu_data.accel_z, sys->imu_data.gyro_x, sys->imu_data.gyro_y,

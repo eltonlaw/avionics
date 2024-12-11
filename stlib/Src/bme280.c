@@ -104,12 +104,12 @@ static double bme280_comp_press(bme280_cfg_t *cfg, uint32_t p_adc) {
     return p_out;
 }
 
-static void bme280_comp(bme280_cfg_t *cfg, bme280_data_t *data){
+static void bme280_comp(bme280_cfg_t *cfg, pressure_data_t *data){
     data->temperature = bme280_comp_temp(cfg, data->temperature);
     data->pressure = bme280_comp_press(cfg, data->pressure);
 }
 
-error_t bme280_read(bme280_cfg_t *cfg, bme280_data_t *data) {
+error_t bme280_read(bme280_cfg_t *cfg, pressure_data_t *data) {
     HAL_StatusTypeDef status;
     uint8_t buf[6];
     status = HAL_I2C_Mem_Read(cfg->i2cx, cfg->addr, BME280_REG_PRESS_MSB, 1, buf, 6, HAL_MAX_DELAY);

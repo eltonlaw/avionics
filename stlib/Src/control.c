@@ -2,17 +2,30 @@
 #include <math.h>
 
 #define ALPHA 0.98
+#define BETA 0.95
 #define PRESSURE_SEA_LEVEL 1013.25 // in hPa
 
 /* Barometric formula */
 // FIXME: assumes temperature is 15C currently
 // FIXME: use starting point as reference pressure
-double pressure_to_altitude(double pressure, double temperature) {
-    // Source: https://ae-bst.resource.bosch.com/media/_tech/media/datasheets/BST-BMP180-DS000-121.pdf
-    return 44330 * 1 - pow((pressure / PRESSURE_SEA_LEVEL), 1 / 5.255);
+double pressure_to_altitude(double p, double p0, double temperature) {
+    const double L = 0.0065; // Temperature lapse rate (K/m)
+    const double R = 287.05; // Specific gas constant for air (J/(kg·K))
+    const double g = 9.80665; // Gravity (m/s^2)
+
+    // Convert temperature to Kelvin
+    double T0 = temperature + 273.15;
+
+    return (T0 / L) * (1 - pow((p / p0), R * L / g));
 }
 
-error_t update_state(state_t *p, imu_data_t* imu_data, double delta_ticks) {
+error_t update_state(
+    state_t *p,
+    double delta_ticks,
+    imu_data_t* imu_data,
+    pressure_data_t* p_data,
+    double p_ref
+) {
     const double dt = delta_ticks / 1000;
     // Integrate angular velocity to get angular position
     double ang_x = p->ang_x + imu_data->gyro_x * dt;
@@ -38,6 +51,9 @@ error_t update_state(state_t *p, imu_data_t* imu_data, double delta_ticks) {
     p->pos_x += p->vel_x * dt;
     p->pos_y += p->vel_y * dt;
     p->pos_z += p->vel_z * dt;
+
+    double pressure_altitude = pressure_to_altitude(p_data->pressure, p_ref, p_data->temperature);
+    p->pos_z = BETA * p->pos_z + (1 - BETA) * pressure_altitude;
 
     return E_OK;
 }

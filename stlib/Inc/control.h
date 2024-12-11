@@ -12,6 +12,12 @@ typedef struct {
 } imu_data_t;
 
 typedef struct {
+    double temperature;
+    double pressure;
+    double humidity;
+} pressure_data_t;
+
+typedef struct {
     double ang_x;
     double ang_y;
     double ang_z;
@@ -23,4 +29,5 @@ typedef struct {
     double pos_z;
 } state_t;
 
-error_t update_state(state_t* s, imu_data_t* imu_data, double delta_ticks);
+error_t update_state(state_t *p, double delta_ticks, imu_data_t* imu_data,
+        pressure_data_t* p_data, double p_ref);

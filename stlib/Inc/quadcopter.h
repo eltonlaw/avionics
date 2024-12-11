@@ -13,7 +13,7 @@ typedef struct {
     mpu6050_cfg_t mpu6050_cfg;
     bme280_cfg_t bme280_cfg;
     imu_data_t imu_data;
-    bme280_data_t bme280_data;
+    pressure_data_t pressure_data;
     state_t state;
     sam_m10q_cfg_t sam_m10q_cfg;
     sam_m10q_data_t sam_m10q_data;

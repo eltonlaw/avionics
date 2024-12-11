@@ -1,4 +1,5 @@
 #include "stm32g0xx.h"
+#include "control.h"
 #include "error.h"
 /* 0x76 when SDO pulled low and 0x77 when SDO pulled high */
 #define BME280_ADDR_0 (0x76 << 1)
@@ -57,13 +58,8 @@ typedef struct {
     int16_t dig_p8;
     int16_t dig_p9;
     int32_t t_fine;
+    double pressure_ref;
 } bme280_cfg_t;
 
-typedef struct {
-    uint32_t pressure;
-    int32_t temperature;
-    uint32_t humidity;
-} bme280_data_t;
-
 error_t bme280_init(bme280_cfg_t *cfg);
-error_t bme280_read(bme280_cfg_t *cfg, bme280_data_t *data);
+error_t bme280_read(bme280_cfg_t *cfg, pressure_data_t *data);
