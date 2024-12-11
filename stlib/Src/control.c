@@ -1,8 +1,16 @@
 #include "control.h"
-#include <stdint.h>
 #include <math.h>
 
 #define ALPHA 0.98
+#define PRESSURE_SEA_LEVEL 1013.25 // in hPa
+
+/* Barometric formula */
+// FIXME: assumes temperature is 15C currently
+// FIXME: use starting point as reference pressure
+double pressure_to_altitude(double pressure, double temperature) {
+    // Source: https://ae-bst.resource.bosch.com/media/_tech/media/datasheets/BST-BMP180-DS000-121.pdf
+    return 44330 * 1 - pow((pressure / PRESSURE_SEA_LEVEL), 1 / 5.255);
+}
 
 error_t update_state(state_t *p, imu_data_t* imu_data, double delta_ticks) {
     const double dt = delta_ticks / 1000;
