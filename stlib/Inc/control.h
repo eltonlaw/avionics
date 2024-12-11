@@ -21,6 +21,6 @@ typedef struct {
     double pos_x;
     double pos_y;
     double pos_z;
-} pose_t;
+} state_t;
 
-error_t update_pose(pose_t* s, imu_data_t* imu_data, double delta_ticks);
+error_t update_state(state_t* s, imu_data_t* imu_data, double delta_ticks);

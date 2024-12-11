@@ -105,15 +105,15 @@ int main(void)
   MX_USART3_UART_Init();
   MX_I2C2_Init();
   /* USER CODE BEGIN 2 */
-  qc_state_t state;
-  qc_init(&state, &hi2c1, &hi2c2, &huart2, &huart3, &htim3);
+  qc_sys_t sys;
+  qc_init(&sys, &hi2c1, &hi2c2, &huart2, &huart3, &htim3);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    qc_update(&state);
+    qc_update(&sys);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
